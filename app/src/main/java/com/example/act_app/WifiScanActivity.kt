@@ -8,6 +8,7 @@ import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Handler
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,7 @@ class WifiScanActivity : AppCompatActivity() {
     private val wifiPermissionCode = 100
     private lateinit var handler: Handler
     private var scanningToast: Toast? = null
+    private lateinit var ssidPrefixInput: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +30,9 @@ class WifiScanActivity : AppCompatActivity() {
         // Initialize Wi-Fi Manager and Handler for recurring tasks
         wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         handler = Handler()
+
+        // Initialize the EditText for SSID prefix
+        ssidPrefixInput = findViewById(R.id.ssidPrefixInput)
 
         // Request Wi-Fi permissions and start scanning
         requestWifiPermissionsAndScan()
@@ -88,24 +93,33 @@ class WifiScanActivity : AppCompatActivity() {
             val wifiList: List<ScanResult> = wifiManager.scanResults
 
             if (wifiList.isNotEmpty()) {
+                // Get the prefix entered by the user
+                val prefix = ssidPrefixInput.text.toString().trim()
+
                 // Use a map to ensure unique BSSID and remove duplicates based on BSSID
                 val uniqueWifiNetworks = mutableMapOf<String, String>()
 
                 // Loop through the scan results and add each network to the map using BSSID as the key
                 for (scanResult in wifiList) {
                     if (scanResult.SSID.isNotEmpty() && scanResult.BSSID.isNotEmpty()) {
-                        // Store SSID and BSSID in the map
-                        uniqueWifiNetworks[scanResult.BSSID] = "SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID}"
+                        // Check if the SSID starts with the entered prefix
+                        if (scanResult.SSID.startsWith(prefix, ignoreCase = true)) {
+                            // Store SSID and BSSID in the map
+                            uniqueWifiNetworks[scanResult.BSSID] = "SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID}"
+
+                            // Save the network in cache if it matches the prefix
+                            saveSsidsToCache(uniqueWifiNetworks.values.toList())
+                        }
                     }
                 }
-
-                // Save the unique SSID list in shared preferences
-                saveSsidsToCache(uniqueWifiNetworks.values.toList())
 
                 // Display the unique Wi-Fi list in ListView
                 val listView = findViewById<ListView>(R.id.listView)
                 val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, uniqueWifiNetworks.values.toList())
                 listView.adapter = adapter
+
+                // Show confirmation for saved networks
+                showSavedNetworksConfirmation(uniqueWifiNetworks.values.toList())
             } else {
                 Toast.makeText(this, "No Wi-Fi networks found", Toast.LENGTH_SHORT).show()
             }
@@ -134,6 +148,14 @@ class WifiScanActivity : AppCompatActivity() {
         // Clear the ListView by setting its adapter to null
         val listView = findViewById<ListView>(R.id.listView)
         listView.adapter = null
+    }
+
+    private fun showSavedNetworksConfirmation(savedNetworks: List<String>) {
+        if (savedNetworks.isNotEmpty()) {
+            Toast.makeText(this, "Networks Saved In Cache: ${savedNetworks.size}", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "No networks match the prefix", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onRequestPermissionsResult(

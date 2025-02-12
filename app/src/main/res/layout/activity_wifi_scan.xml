@@ -19,6 +19,18 @@
         android:layout_marginBottom="16dp"
         android:paddingTop="16dp" />
 
+    <!-- Text input for Wi-Fi SSID prefix -->
+    <EditText
+        android:id="@+id/ssidPrefixInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter SSID prefix (e.g., 'ACT')"
+        android:inputType="text"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        android:padding="10dp"
+        android:background="#2b2b2b"/>
+
     <!-- Scanning message -->
     <TextView
         android:id="@+id/scanningMessage"
@@ -48,6 +60,6 @@
         android:dividerHeight="1dp"
         android:paddingTop="8dp"
         android:background="#2b2b2b"
-    android:scrollbars="vertical" />
+        android:scrollbars="vertical" />
 
 </LinearLayout>
