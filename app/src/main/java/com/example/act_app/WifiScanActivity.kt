@@ -7,6 +7,8 @@ import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -72,6 +74,20 @@ class WifiScanActivity : AppCompatActivity() {
             Toast.makeText(this, "Cache Cleared", Toast.LENGTH_SHORT).show()
         }
 
+        // Load cached networks and SSID prefix when the activity is created
+        updateCachedNetworksListView()
+        loadSsidPrefix()
+
+        // Save SSID prefix whenever it changes
+        ssidPrefixInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                saveSsidPrefix(s.toString())
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
         requestWifiPermissionsAndScan()
 
         handler.postDelayed(object : Runnable {
@@ -81,6 +97,12 @@ class WifiScanActivity : AppCompatActivity() {
                 handler.postDelayed(this, 30000)
             }
         }, 30000)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Optionally, refresh the cached networks list when the activity is resumed
+        updateCachedNetworksListView()
     }
 
     private fun showScanningMessage() {
@@ -162,6 +184,19 @@ class WifiScanActivity : AppCompatActivity() {
         val savedSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
         val adapterCachedNetworks = ArrayAdapter(this, android.R.layout.simple_list_item_1, savedSsids.toList())
         cachedNetworksListView.adapter = adapterCachedNetworks
+    }
+
+    private fun saveSsidPrefix(prefix: String) {
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("ssid_prefix", prefix)
+        editor.apply()
+    }
+
+    private fun loadSsidPrefix() {
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+        val prefix = sharedPreferences.getString("ssid_prefix", "") ?: ""
+        ssidPrefixInput.setText(prefix)
     }
 
     override fun onRequestPermissionsResult(
