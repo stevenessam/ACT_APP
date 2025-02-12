@@ -31,6 +31,7 @@ class WifiScanActivity : AppCompatActivity() {
     private lateinit var ssidPrefixInput: EditText
     private lateinit var allNetworksListView: ListView
     private lateinit var cachedNetworksListView: ListView
+    private var isScanning = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,20 +90,40 @@ class WifiScanActivity : AppCompatActivity() {
         })
 
         requestWifiPermissionsAndScan()
-
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                showScanningMessage()
-                requestWifiPermissionsAndScan()
-                handler.postDelayed(this, 30000)
-            }
-        }, 30000)
     }
 
     override fun onResume() {
         super.onResume()
+        // Restart scanning when the activity is resumed
+        if (!isScanning) {
+            startScanning()
+        }
         // Optionally, refresh the cached networks list when the activity is resumed
         updateCachedNetworksListView()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Stop scanning when the activity is paused
+        stopScanning()
+    }
+
+    private fun startScanning() {
+        isScanning = true
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                showScanningMessage()
+                requestWifiPermissionsAndScan()
+                if (isScanning) {
+                    handler.postDelayed(this, 30000)
+                }
+            }
+        }, 0) // Start immediately
+    }
+
+    private fun stopScanning() {
+        isScanning = false
+        handler.removeCallbacksAndMessages(null)
     }
 
     private fun showScanningMessage() {
