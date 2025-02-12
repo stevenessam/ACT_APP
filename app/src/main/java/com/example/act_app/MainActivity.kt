@@ -1,6 +1,7 @@
 package com.example.act_app
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.webkit.JavascriptInterface
@@ -37,12 +38,13 @@ class MainActivity : AppCompatActivity() {
                     // Already in MainActivity, do nothing
                 }
                 R.id.nav_wifi_scan -> {
-                    startActivity(android.content.Intent(this, WifiScanActivity::class.java))
+                    startActivity(Intent(this, WifiScanActivity::class.java))
                 }
             }
             drawerLayout.closeDrawers()
             true
         }
+
 
         val webView = findViewById<WebView>(R.id.webView)
         webView.webViewClient = WebViewClient()

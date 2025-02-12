@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- Toolbar Section -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -25,7 +26,7 @@
             android:padding="16dp"
             android:background="#f7f7f7">
 
-            <!-- Title at the top -->
+            <!-- Title Section -->
             <TextView
                 android:id="@+id/titleText"
                 android:layout_width="match_parent"
@@ -38,19 +39,28 @@
                 android:layout_marginBottom="16dp"
                 android:paddingTop="16dp" />
 
-            <!-- Text input for Wi-Fi SSID prefix -->
+            <!-- SSID Input Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SSID Prefix Input"
+                android:textSize="18sp"
+                android:textColor="#555"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
             <EditText
                 android:id="@+id/ssidPrefixInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter SSID prefix (e.g., 'ACT')"
+                android:hint="Enter SSID prefix to save (e.g., 'ACT')"
                 android:inputType="text"
                 android:textSize="16sp"
                 android:layout_marginBottom="16dp"
                 android:padding="10dp"
                 android:background="#2b2b2b"/>
 
-            <!-- Scanning message -->
+            <!-- Scanning Status Section -->
             <TextView
                 android:id="@+id/scanningMessage"
                 android:layout_width="match_parent"
@@ -61,7 +71,6 @@
                 android:gravity="center"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Progress Bar for scanning -->
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
@@ -69,9 +78,18 @@
                 android:layout_gravity="center"
                 android:visibility="gone" />
 
-            <!-- ListView to show Wi-Fi networks -->
+            <!-- All Networks List Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="All Scanned Networks"
+                android:textSize="18sp"
+                android:textColor="#555"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
             <ListView
-                android:id="@+id/listView"
+                android:id="@+id/allNetworksListView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -81,9 +99,44 @@
                 android:background="#2b2b2b"
                 android:scrollbars="vertical" />
 
+            <!-- Cached Networks List Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cached Networks"
+                android:textSize="18sp"
+                android:textColor="#555"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="16dp" />
+
+            <ListView
+                android:id="@+id/cachedNetworksListView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:divider="#ccc"
+                android:dividerHeight="1dp"
+                android:paddingTop="8dp"
+                android:background="#2b2b2b"
+                android:scrollbars="vertical" />
+
+            <!-- Clear Cache Button Section -->
+            <Button
+                android:id="@+id/clearCacheButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Clear Cache"
+                android:layout_marginTop="16dp"
+                android:padding="10dp"
+                android:background="@color/blue"
+                android:textColor="@android:color/white"/>
+
+
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Navigation Drawer Section -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
         android:layout_width="wrap_content"

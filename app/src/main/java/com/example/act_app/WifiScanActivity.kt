@@ -8,6 +8,7 @@ import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Handler
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
@@ -26,6 +27,8 @@ class WifiScanActivity : AppCompatActivity() {
     private lateinit var handler: Handler
     private var scanningToast: Toast? = null
     private lateinit var ssidPrefixInput: EditText
+    private lateinit var allNetworksListView: ListView
+    private lateinit var cachedNetworksListView: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,14 +62,21 @@ class WifiScanActivity : AppCompatActivity() {
         wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         handler = Handler()
         ssidPrefixInput = findViewById(R.id.ssidPrefixInput)
+        allNetworksListView = findViewById(R.id.allNetworksListView)
+        cachedNetworksListView = findViewById(R.id.cachedNetworksListView)
+
+        val clearCacheButton: Button = findViewById(R.id.clearCacheButton)
+        clearCacheButton.setOnClickListener {
+            clearWifiCache()
+            updateCachedNetworksListView()
+            Toast.makeText(this, "Cache Cleared", Toast.LENGTH_SHORT).show()
+        }
 
         requestWifiPermissionsAndScan()
 
         handler.postDelayed(object : Runnable {
             override fun run() {
                 showScanningMessage()
-                clearWifiCache()
-                clearListView()
                 requestWifiPermissionsAndScan()
                 handler.postDelayed(this, 30000)
             }
@@ -105,23 +115,24 @@ class WifiScanActivity : AppCompatActivity() {
             val wifiList: List<ScanResult> = wifiManager.scanResults
 
             if (wifiList.isNotEmpty()) {
-                val prefix = ssidPrefixInput.text.toString().trim()
+                val allNetworks = mutableListOf<String>()
                 val uniqueWifiNetworks = mutableMapOf<String, String>()
 
                 for (scanResult in wifiList) {
                     if (scanResult.SSID.isNotEmpty() && scanResult.BSSID.isNotEmpty()) {
+                        allNetworks.add("SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID}")
+                        val prefix = ssidPrefixInput.text.toString().trim()
                         if (scanResult.SSID.startsWith(prefix, ignoreCase = true)) {
                             uniqueWifiNetworks[scanResult.BSSID] = "SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID}"
-                            saveSsidsToCache(uniqueWifiNetworks.values.toList())
                         }
                     }
                 }
 
-                val listView = findViewById<ListView>(R.id.listView)
-                val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, uniqueWifiNetworks.values.toList())
-                listView.adapter = adapter
+                val adapterAllNetworks = ArrayAdapter(this, android.R.layout.simple_list_item_1, allNetworks)
+                allNetworksListView.adapter = adapterAllNetworks
 
-                showSavedNetworksConfirmation(uniqueWifiNetworks.values.toList())
+                saveSsidsToCache(uniqueWifiNetworks.values.toList())
+                updateCachedNetworksListView()
             } else {
                 Toast.makeText(this, "No Wi-Fi networks found", Toast.LENGTH_SHORT).show()
             }
@@ -130,10 +141,12 @@ class WifiScanActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveSsidsToCache(ssidList: List<String>) {
+    private fun saveSsidsToCache(newSsidList: List<String>) {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putStringSet("saved_ssids", ssidList.toSet())
+        val existingSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
+        val updatedSsids = existingSsids.union(newSsidList.toSet())
+        editor.putStringSet("saved_ssids", updatedSsids)
         editor.apply()
     }
 
@@ -144,17 +157,11 @@ class WifiScanActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    private fun clearListView() {
-        val listView = findViewById<ListView>(R.id.listView)
-        listView.adapter = null
-    }
-
-    private fun showSavedNetworksConfirmation(savedNetworks: List<String>) {
-        if (savedNetworks.isNotEmpty()) {
-            Toast.makeText(this, "Networks Saved In Cache: ${savedNetworks.size}", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "No networks match the prefix", Toast.LENGTH_SHORT).show()
-        }
+    private fun updateCachedNetworksListView() {
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+        val savedSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
+        val adapterCachedNetworks = ArrayAdapter(this, android.R.layout.simple_list_item_1, savedSsids.toList())
+        cachedNetworksListView.adapter = adapterCachedNetworks
     }
 
     override fun onRequestPermissionsResult(
