@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         // Ajouter l'interface JavaScript à la WebView
         webView.addJavascriptInterface(WebAppInterface(this), "Android")
 
-        webView.loadUrl("http://192.168.237.32/")  // Your website URL
+        webView.loadUrl("https://act.gitlabpages.inria.fr/website/")  // Your website URL
     }
 }
 
