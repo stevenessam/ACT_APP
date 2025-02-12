@@ -12,8 +12,12 @@ import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.ActionBarDrawerToggle
 
 class WifiScanActivity : AppCompatActivity() {
 
@@ -27,38 +31,50 @@ class WifiScanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wifi_scan)
 
-        // Initialize Wi-Fi Manager and Handler for recurring tasks
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawerLayout)
+        val navView: NavigationView = findViewById(R.id.navView)
+
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_main -> {
+                    startActivity(android.content.Intent(this, MainActivity::class.java))
+                }
+                R.id.nav_wifi_scan -> {
+                    // Already in WifiScanActivity, do nothing
+                }
+            }
+            drawerLayout.closeDrawers()
+            true
+        }
+
         wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         handler = Handler()
-
-        // Initialize the EditText for SSID prefix
         ssidPrefixInput = findViewById(R.id.ssidPrefixInput)
 
-        // Request Wi-Fi permissions and start scanning
         requestWifiPermissionsAndScan()
 
-        // Repeated task to scan every 30 seconds and clear cache and list before scanning
         handler.postDelayed(object : Runnable {
             override fun run() {
-                // Show the "Scanning for Wi-Fi" message every time before scanning
                 showScanningMessage()
-
-                // Clear the previous cache and list before starting a new scan
                 clearWifiCache()
                 clearListView()
-
-                // Start scanning for Wi-Fi networks again
                 requestWifiPermissionsAndScan()
-
-                // Continue scanning every 30 seconds
-                handler.postDelayed(this, 30000)  // 30 seconds delay
+                handler.postDelayed(this, 30000)
             }
-        }, 30000)  // Initial delay of 30 seconds
+        }, 30000)
     }
 
     private fun showScanningMessage() {
-        // Show the "Scanning for Wi-Fi" message continuously
-        scanningToast?.cancel() // Cancel the previous toast if it exists
+        scanningToast?.cancel()
         scanningToast = Toast.makeText(this, "Scanning for Wi-Fi...", Toast.LENGTH_SHORT)
         scanningToast?.show()
     }
@@ -69,7 +85,6 @@ class WifiScanActivity : AppCompatActivity() {
             Manifest.permission.ACCESS_WIFI_STATE
         )
 
-        // Ensure both permissions are granted for proper Wi-Fi scanning
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             scanWifiNetworks()
         } else {
@@ -78,47 +93,34 @@ class WifiScanActivity : AppCompatActivity() {
     }
 
     private fun scanWifiNetworks() {
-        // Directly start the Wi-Fi scan, without checking Wi-Fi state or showing any Toasts.
         if (wifiManager.startScan()) {
-            // Wait for the scan results to be available (increase waiting time to 3-5 seconds)
             handler.postDelayed({
                 displayWifiNetworks()
-            }, 3000) // Increased delay to 3 seconds before displaying results
+            }, 3000)
         }
     }
 
     private fun displayWifiNetworks() {
-        // Check for location permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             val wifiList: List<ScanResult> = wifiManager.scanResults
 
             if (wifiList.isNotEmpty()) {
-                // Get the prefix entered by the user
                 val prefix = ssidPrefixInput.text.toString().trim()
-
-                // Use a map to ensure unique BSSID and remove duplicates based on BSSID
                 val uniqueWifiNetworks = mutableMapOf<String, String>()
 
-                // Loop through the scan results and add each network to the map using BSSID as the key
                 for (scanResult in wifiList) {
                     if (scanResult.SSID.isNotEmpty() && scanResult.BSSID.isNotEmpty()) {
-                        // Check if the SSID starts with the entered prefix
                         if (scanResult.SSID.startsWith(prefix, ignoreCase = true)) {
-                            // Store SSID and BSSID in the map
                             uniqueWifiNetworks[scanResult.BSSID] = "SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID}"
-
-                            // Save the network in cache if it matches the prefix
                             saveSsidsToCache(uniqueWifiNetworks.values.toList())
                         }
                     }
                 }
 
-                // Display the unique Wi-Fi list in ListView
                 val listView = findViewById<ListView>(R.id.listView)
                 val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, uniqueWifiNetworks.values.toList())
                 listView.adapter = adapter
 
-                // Show confirmation for saved networks
                 showSavedNetworksConfirmation(uniqueWifiNetworks.values.toList())
             } else {
                 Toast.makeText(this, "No Wi-Fi networks found", Toast.LENGTH_SHORT).show()
@@ -131,8 +133,6 @@ class WifiScanActivity : AppCompatActivity() {
     private fun saveSsidsToCache(ssidList: List<String>) {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-
-        // Use a Set to automatically prevent duplicates
         editor.putStringSet("saved_ssids", ssidList.toSet())
         editor.apply()
     }
@@ -140,12 +140,11 @@ class WifiScanActivity : AppCompatActivity() {
     private fun clearWifiCache() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.clear()  // Clear the saved SSIDs
+        editor.clear()
         editor.apply()
     }
 
     private fun clearListView() {
-        // Clear the ListView by setting its adapter to null
         val listView = findViewById<ListView>(R.id.listView)
         listView.adapter = null
     }

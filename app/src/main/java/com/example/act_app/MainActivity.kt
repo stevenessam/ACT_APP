@@ -7,32 +7,52 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.ActionBarDrawerToggle
 
 class MainActivity : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Hide the ActionBar
-        supportActionBar?.hide()
-
         setContentView(R.layout.activity_main)
 
-        val webView = findViewById<WebView>(R.id.webView)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
-        webView.webViewClient = WebViewClient()  // Makes the links open within the WebView
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawerLayout)
+        val navView: NavigationView = findViewById(R.id.navView)
+
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_main -> {
+                    // Already in MainActivity, do nothing
+                }
+                R.id.nav_wifi_scan -> {
+                    startActivity(android.content.Intent(this, WifiScanActivity::class.java))
+                }
+            }
+            drawerLayout.closeDrawers()
+            true
+        }
+
+        val webView = findViewById<WebView>(R.id.webView)
+        webView.webViewClient = WebViewClient()
 
         val webSettings = webView.settings
-        webSettings.javaScriptEnabled = true  // Enable JavaScript if needed
-        webSettings.domStorageEnabled = true  // Enable DOM Storage if needed
+        webSettings.javaScriptEnabled = true
+        webSettings.domStorageEnabled = true
 
-        // Ajouter l'interface JavaScript à la WebView
         webView.addJavascriptInterface(WebAppInterface(this), "Android")
-
-        webView.loadUrl("https://act.gitlabpages.inria.fr/website/")  // Your website URL
+        webView.loadUrl("https://act.gitlabpages.inria.fr/website/")
     }
 }
 
@@ -40,7 +60,6 @@ class WebAppInterface(private val context: Context) {
 
     @JavascriptInterface
     fun sendDataToAndroid(data: String) {
-        // Traitez les données reçues ici
         Log.d("WebAppInterface", "Data received from WebView: $data")
     }
 }

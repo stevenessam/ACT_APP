@@ -1,65 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#f7f7f7">
+    android:layout_height="match_parent">
 
-    <!-- Title at the top -->
-    <TextView
-        android:id="@+id/titleText"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Wi-Fi Network Scanner"
-        android:textSize="24sp"
-        android:textColor="#333"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginBottom="16dp"
-        android:paddingTop="16dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <!-- Text input for Wi-Fi SSID prefix -->
-    <EditText
-        android:id="@+id/ssidPrefixInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter SSID prefix (e.g., 'ACT')"
-        android:inputType="text"
-        android:textSize="16sp"
-        android:layout_marginBottom="16dp"
-        android:padding="10dp"
-        android:background="#2b2b2b"/>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="Wi-Fi Scan Activity"
+            app:titleTextColor="@android:color/white" />
 
-    <!-- Scanning message -->
-    <TextView
-        android:id="@+id/scanningMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Scanning for available Wi-Fi networks..."
-        android:textSize="16sp"
-        android:textColor="#777"
-        android:gravity="center"
-        android:layout_marginBottom="16dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="#f7f7f7">
 
-    <!-- Progress Bar for scanning -->
-    <ProgressBar
-        android:id="@+id/progressBar"
+            <!-- Title at the top -->
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wi-Fi Network Scanner"
+                android:textSize="24sp"
+                android:textColor="#333"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"
+                android:paddingTop="16dp" />
+
+            <!-- Text input for Wi-Fi SSID prefix -->
+            <EditText
+                android:id="@+id/ssidPrefixInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter SSID prefix (e.g., 'ACT')"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp"
+                android:padding="10dp"
+                android:background="#2b2b2b"/>
+
+            <!-- Scanning message -->
+            <TextView
+                android:id="@+id/scanningMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Scanning for available Wi-Fi networks..."
+                android:textSize="16sp"
+                android:textColor="#777"
+                android:gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Progress Bar for scanning -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+            <!-- ListView to show Wi-Fi networks -->
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:divider="#ccc"
+                android:dividerHeight="1dp"
+                android:paddingTop="8dp"
+                android:background="#2b2b2b"
+                android:scrollbars="vertical" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/navigation_menu"
+        app:headerLayout="@layout/nav_header" />
 
-    <!-- ListView to show Wi-Fi networks -->
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:divider="#ccc"
-        android:dividerHeight="1dp"
-        android:paddingTop="8dp"
-        android:background="#2b2b2b"
-        android:scrollbars="vertical" />
-
-</LinearLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

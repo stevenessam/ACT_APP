@@ -23,7 +23,10 @@
             </intent-filter>
         </activity>
 
-        <!-- <activity android:name=".MainActivity" /> -->
+        <activity android:name=".WifiScanActivity" />
+
+        <service android:name=".WifiScanService"
+            android:exported="false"/>
     </application>
 
 </manifest>
