@@ -175,7 +175,7 @@ class WifiScanActivity : AppCompatActivity() {
     private fun clearWifiCache() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.clear()
+        editor.remove("saved_ssids") // Only remove the cached SSIDs
         editor.apply()
     }
 
