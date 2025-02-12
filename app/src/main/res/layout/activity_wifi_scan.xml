@@ -3,10 +3,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#f7f7f7">
 
+    <!-- Title at the top -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wi-Fi Network Scanner"
+        android:textSize="24sp"
+        android:textColor="#333"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:paddingTop="16dp" />
+
+    <!-- Scanning message -->
+    <TextView
+        android:id="@+id/scanningMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Scanning for available Wi-Fi networks..."
+        android:textSize="16sp"
+        android:textColor="#777"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Progress Bar for scanning -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <!-- ListView to show Wi-Fi networks -->
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="#ccc"
+        android:dividerHeight="1dp"
+        android:paddingTop="8dp"
+        android:background="#2b2b2b"
+    android:scrollbars="vertical" />
+
 </LinearLayout>
