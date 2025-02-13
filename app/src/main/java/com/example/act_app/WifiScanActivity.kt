@@ -153,6 +153,7 @@ class WifiScanActivity : AppCompatActivity() {
         }
     }
 
+    // Inside your WifiScanActivity class
     private fun displayWifiNetworks() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             val wifiList: List<ScanResult> = wifiManager.scanResults
@@ -171,7 +172,8 @@ class WifiScanActivity : AppCompatActivity() {
                     }
                 }
 
-                val adapterAllNetworks = ArrayAdapter(this, android.R.layout.simple_list_item_1, allNetworks)
+                // Use the custom layout for the ArrayAdapter
+                val adapterAllNetworks = ArrayAdapter(this, R.layout.list_item_custom, allNetworks)
                 allNetworksListView.adapter = adapterAllNetworks
 
                 saveSsidsToCache(uniqueWifiNetworks.values.toList())
@@ -182,6 +184,14 @@ class WifiScanActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Location permission required to scan Wi-Fi networks", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun updateCachedNetworksListView() {
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+        val savedSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
+        // Use the custom layout for the ArrayAdapter
+        val adapterCachedNetworks = ArrayAdapter(this, R.layout.list_item_custom, savedSsids.toList())
+        cachedNetworksListView.adapter = adapterCachedNetworks
     }
 
     private fun saveSsidsToCache(newSsidList: List<String>) {
@@ -200,12 +210,6 @@ class WifiScanActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    private fun updateCachedNetworksListView() {
-        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
-        val savedSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
-        val adapterCachedNetworks = ArrayAdapter(this, android.R.layout.simple_list_item_1, savedSsids.toList())
-        cachedNetworksListView.adapter = adapterCachedNetworks
-    }
 
     private fun saveSsidPrefix(prefix: String) {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
