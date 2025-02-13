@@ -75,6 +75,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+
+
 class WebAppInterface(private val context: Context) {
 
     @JavascriptInterface
@@ -123,9 +126,16 @@ class WebAppInterface(private val context: Context) {
         val alertMessageView = dialogView.findViewById<TextView>(R.id.alertMessage)
         val matchingSsidsView = dialogView.findViewById<TextView>(R.id.matchingSsids)
         val okButton = dialogView.findViewById<Button>(R.id.okButton)
+        val coloredTop = dialogView.findViewById<View>(R.id.coloredTop)
 
         alertMessageView.text = alertMessage
-        alertMessageView.setTextColor(alertColor)
+
+        // Set colors based on alert type
+        coloredTop.setBackgroundColor(alertColor)
+        okButton.setBackgroundColor(alertColor)
+
+        // Set button text color to ensure contrast
+        okButton.setTextColor(if (alertColor == android.graphics.Color.RED) android.graphics.Color.WHITE else android.graphics.Color.BLACK)
 
         if (matchingSsids.isNotEmpty()) {
             matchingSsidsView.text = "Matching SSIDs: ${matchingSsids.joinToString(", ")}"
@@ -146,4 +156,5 @@ class WebAppInterface(private val context: Context) {
 
         alertDialog.show()
     }
+
 }
