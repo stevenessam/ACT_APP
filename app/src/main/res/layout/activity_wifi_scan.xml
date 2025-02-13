@@ -58,7 +58,7 @@
                 android:textSize="16sp"
                 android:layout_marginBottom="16dp"
                 android:padding="10dp"
-                android:background="#ffffff"
+                android:background="@drawable/border"
                 android:textColor="#000" />
 
             <!-- Scanning Status Section -->
