@@ -36,8 +36,7 @@
                 android:textColor="#333"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:layout_marginBottom="16dp"
-                android:paddingTop="16dp" />
+                android:layout_marginBottom="16dp" />
 
             <!-- SSID Input Section -->
             <TextView
@@ -63,22 +62,30 @@
                 android:textColor="#000" />
 
             <!-- Scanning Status Section -->
-            <TextView
-                android:id="@+id/scanningMessage"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Scanning for available Wi-Fi networks..."
-                android:textSize="16sp"
-                android:textColor="#777"
+                android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="16dp">
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:indeterminateTint="#ee2d20"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/scanningMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Scanning for available Wi-Fi networks..."
+                    android:textSize="16sp"
+                    android:textColor="#777"
+                    android:gravity="center" />
+            </LinearLayout>
 
             <!-- All Networks List Section -->
             <TextView
@@ -99,7 +106,7 @@
                 android:dividerHeight="1dp"
                 android:paddingTop="8dp"
                 android:background="@drawable/border"
-            android:scrollbars="vertical" />
+                android:scrollbars="vertical" />
 
             <!-- Cached Networks List Section -->
             <TextView
@@ -121,7 +128,7 @@
                 android:dividerHeight="1dp"
                 android:paddingTop="8dp"
                 android:background="@drawable/border"
-            android:scrollbars="vertical" />
+                android:scrollbars="vertical" />
 
             <!-- Clear Cache Button Section -->
             <Button
