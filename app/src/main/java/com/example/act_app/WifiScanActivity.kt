@@ -9,10 +9,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -27,11 +30,13 @@ class WifiScanActivity : AppCompatActivity() {
     private lateinit var wifiManager: WifiManager
     private val wifiPermissionCode = 100
     private lateinit var handler: Handler
-    private var scanningToast: Toast? = null
     private lateinit var ssidPrefixInput: EditText
     private lateinit var allNetworksListView: ListView
     private lateinit var cachedNetworksListView: ListView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var scanningMessage: TextView
     private var isScanning = false
+    private var isProgressBarVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +72,8 @@ class WifiScanActivity : AppCompatActivity() {
         ssidPrefixInput = findViewById(R.id.ssidPrefixInput)
         allNetworksListView = findViewById(R.id.allNetworksListView)
         cachedNetworksListView = findViewById(R.id.cachedNetworksListView)
+        progressBar = findViewById(R.id.progressBar)
+        scanningMessage = findViewById(R.id.scanningMessage)
 
         val clearCacheButton: Button = findViewById(R.id.clearCacheButton)
         clearCacheButton.setOnClickListener {
@@ -112,10 +119,22 @@ class WifiScanActivity : AppCompatActivity() {
         isScanning = true
         handler.postDelayed(object : Runnable {
             override fun run() {
-                showScanningMessage()
                 requestWifiPermissionsAndScan()
                 if (isScanning) {
                     handler.postDelayed(this, 30000)
+                }
+            }
+        }, 0) // Start immediately
+
+        // Schedule the ProgressBar and TextView visibility
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                if (isScanning) {
+                    val visibility = if (isProgressBarVisible) View.INVISIBLE else View.VISIBLE
+                    progressBar.visibility = visibility
+                    scanningMessage.visibility = visibility
+                    isProgressBarVisible = !isProgressBarVisible
+                    handler.postDelayed(this, if (isProgressBarVisible) 20000 else 10000)
                 }
             }
         }, 0) // Start immediately
@@ -124,12 +143,8 @@ class WifiScanActivity : AppCompatActivity() {
     private fun stopScanning() {
         isScanning = false
         handler.removeCallbacksAndMessages(null)
-    }
-
-    private fun showScanningMessage() {
-        scanningToast?.cancel()
-        scanningToast = Toast.makeText(this, "Scanning for Wi-Fi...", Toast.LENGTH_SHORT)
-        scanningToast?.show()
+        progressBar.visibility = View.INVISIBLE
+        scanningMessage.visibility = View.INVISIBLE
     }
 
     private fun requestWifiPermissionsAndScan() {
@@ -209,7 +224,6 @@ class WifiScanActivity : AppCompatActivity() {
         editor.remove("saved_ssids") // Only remove the cached SSIDs
         editor.apply()
     }
-
 
     private fun saveSsidPrefix(prefix: String) {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
