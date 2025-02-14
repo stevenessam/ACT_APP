@@ -2,6 +2,9 @@ package com.example.act_app
 
 import android.content.Context
 import android.content.Intent
+import android.media.Ringtone
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -137,8 +140,9 @@ class WebAppInterface(private val context: Context) {
 
         val alertDialog = dialogBuilder.create()
 
-        // Vibrate the phone when showing the alert
+        // Vibrate the phone and play system notification sound when showing the alert
         vibratePhone()
+        playNotificationSound()
 
         okButton.setOnClickListener {
             alertDialog.dismiss()
@@ -155,5 +159,11 @@ class WebAppInterface(private val context: Context) {
             // Deprecated in API 26
             vibrator.vibrate(500)
         }
+    }
+
+    private fun playNotificationSound() {
+        val notificationUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val ringtone: Ringtone = RingtoneManager.getRingtone(context, notificationUri)
+        ringtone.play()
     }
 }
