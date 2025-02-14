@@ -7,22 +7,23 @@
     android:background="@drawable/dialog_background"
     android:elevation="10dp">
 
-    <View
-        android:id="@+id/coloredTop"
+    <TextView
+        android:id="@+id/alertTitle"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:layout_marginBottom="24dp"
-        android:background="@android:color/holo_green_light"
-        android:visibility="visible" />
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
 
     <TextView
         android:id="@+id/alertMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
+        android:textSize="20sp"
         android:textColor="@android:color/black"
         android:gravity="center"
-        android:textStyle="bold"
         android:layout_marginBottom="16dp" />
 
     <TextView
@@ -39,9 +40,9 @@
         android:id="@+id/okButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Done"
+        android:text="OK"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@android:color/holo_green_light"
+        android:backgroundTint="#ee2d20"
         android:textColor="@android:color/white"
         android:padding="14dp"
         android:elevation="6dp"

@@ -4,24 +4,21 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.app.AlertDialog
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
+import android.webkit.JavascriptInterface
 import android.widget.Button
 import android.widget.TextView
-
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,8 +73,6 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-
-
 class WebAppInterface(private val context: Context) {
 
     @JavascriptInterface
@@ -86,7 +81,7 @@ class WebAppInterface(private val context: Context) {
 
         // Check if the received data is empty
         if (data.isEmpty()) {
-            showAlertDialog("Safe Area", emptyList(), android.graphics.Color.GREEN)
+            showAlertDialog("Safe Zone No Contamination", emptyList(), false)
             return
         }
 
@@ -104,40 +99,28 @@ class WebAppInterface(private val context: Context) {
             matchingSsids.addAll(matches)
         }
 
-        // Determine alert message and color based on matches
-        val alertMessage = if (matchingSsids.isNotEmpty()) {
-            "Contamination Area"
-        } else {
-            "Safe Area"
-        }
-
-        val alertColor = if (matchingSsids.isNotEmpty()) {
-            android.graphics.Color.RED
-        } else {
-            android.graphics.Color.GREEN
-        }
+        // Determine alert message based on matches
+        val isContaminated = matchingSsids.isNotEmpty()
 
         // Show the custom dialog
-        showAlertDialog(alertMessage, matchingSsids, alertColor)
+        showAlertDialog("Zone Contaminated", matchingSsids, isContaminated)
     }
 
-    private fun showAlertDialog(alertMessage: String, matchingSsids: List<String>, alertColor: Int) {
+    private fun showAlertDialog(alertMessage: String, matchingSsids: List<String>, isContaminated: Boolean) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_alert, null)
+        val alertTitleView = dialogView.findViewById<TextView>(R.id.alertTitle)
         val alertMessageView = dialogView.findViewById<TextView>(R.id.alertMessage)
         val matchingSsidsView = dialogView.findViewById<TextView>(R.id.matchingSsids)
         val okButton = dialogView.findViewById<Button>(R.id.okButton)
-        val coloredTop = dialogView.findViewById<View>(R.id.coloredTop)
 
+        // Set the title based on the alert type
+        alertTitleView.text = if (isContaminated) "Alert : ⚠️" else "Alert : ✅"
+
+        // Set the message based on the alert type
         alertMessageView.text = alertMessage
 
-        // Set colors based on alert type
-        coloredTop.setBackgroundColor(alertColor)
-        okButton.setBackgroundColor(alertColor)
-
-        // Set button text color to ensure contrast
-        okButton.setTextColor(if (alertColor == android.graphics.Color.RED) android.graphics.Color.WHITE else android.graphics.Color.BLACK)
-
-        if (matchingSsids.isNotEmpty()) {
+        // Show matching SSIDs if contaminated
+        if (isContaminated && matchingSsids.isNotEmpty()) {
             matchingSsidsView.text = "Matching SSIDs: ${matchingSsids.joinToString(", ")}"
             matchingSsidsView.visibility = View.VISIBLE
         } else {
@@ -156,5 +139,4 @@ class WebAppInterface(private val context: Context) {
 
         alertDialog.show()
     }
-
 }
