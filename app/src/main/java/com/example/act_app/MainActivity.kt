@@ -2,7 +2,10 @@ package com.example.act_app
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -19,6 +22,7 @@ import android.view.View
 import android.webkit.JavascriptInterface
 import android.widget.Button
 import android.widget.TextView
+
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,10 +137,23 @@ class WebAppInterface(private val context: Context) {
 
         val alertDialog = dialogBuilder.create()
 
+        // Vibrate the phone when showing the alert
+        vibratePhone()
+
         okButton.setOnClickListener {
             alertDialog.dismiss()
         }
 
         alertDialog.show()
+    }
+
+    private fun vibratePhone() {
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            // Deprecated in API 26
+            vibrator.vibrate(500)
+        }
     }
 }
