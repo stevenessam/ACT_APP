@@ -2,11 +2,14 @@ package com.example.act_app
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -28,7 +31,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 class WifiScanActivity : AppCompatActivity() {
 
     private lateinit var wifiManager: WifiManager
+    private lateinit var locationManager: LocationManager
     private val wifiPermissionCode = 100
+    private val locationRequestCode = 101
     private lateinit var handler: Handler
     private lateinit var ssidPrefixInput: EditText
     private lateinit var allNetworksListView: ListView
@@ -57,7 +62,7 @@ class WifiScanActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_main -> {
-                    startActivity(android.content.Intent(this, MainActivity::class.java))
+                    startActivity(Intent(this, MainActivity::class.java))
                 }
                 R.id.nav_wifi_scan -> {
                     // Already in WifiScanActivity, do nothing
@@ -68,6 +73,7 @@ class WifiScanActivity : AppCompatActivity() {
         }
 
         wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         handler = Handler()
         ssidPrefixInput = findViewById(R.id.ssidPrefixInput)
         allNetworksListView = findViewById(R.id.allNetworksListView)
@@ -148,6 +154,18 @@ class WifiScanActivity : AppCompatActivity() {
     }
 
     private fun requestWifiPermissionsAndScan() {
+        if (!isWifiEnabled()) {
+            Toast.makeText(this, "Please enable Wi-Fi", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
+            return
+        }
+
+        if (!isLocationEnabled()) {
+            Toast.makeText(this, "Please enable Location", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            return
+        }
+
         val requiredPermissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_WIFI_STATE
@@ -160,6 +178,15 @@ class WifiScanActivity : AppCompatActivity() {
         }
     }
 
+    private fun isWifiEnabled(): Boolean {
+        return wifiManager.isWifiEnabled
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
     private fun scanWifiNetworks() {
         if (wifiManager.startScan()) {
             handler.postDelayed({
@@ -168,7 +195,6 @@ class WifiScanActivity : AppCompatActivity() {
         }
     }
 
-    // Inside your WifiScanActivity class
     private fun displayWifiNetworks() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             val wifiList: List<ScanResult> = wifiManager.scanResults
