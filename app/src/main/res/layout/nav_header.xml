@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ACT APP"
+            android:text="Asynchronous Contact Tracing System"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textColor="@android:color/white" />
     </LinearLayout>
