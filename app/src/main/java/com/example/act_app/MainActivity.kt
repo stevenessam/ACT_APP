@@ -114,7 +114,7 @@ class WebAppInterface(private val context: Context) {
         val okButton = dialogView.findViewById<Button>(R.id.okButton)
 
         // Set the title based on the alert type
-        alertTitleView.text = if (isContaminated) "Alert : ⚠️" else "Alert : ✅"
+        alertTitleView.text = if (isContaminated) "Alert : ❗️" else "Alert : ✅"
 
         // Set the message based on the alert type
         alertMessageView.text = alertMessage
