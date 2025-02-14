@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="#ee2d20"
-            app:title="Main Activity"
+            app:title="ACT MAP"
             app:titleTextColor="@android:color/white" />
 
         <RelativeLayout

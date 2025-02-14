@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="#ee2d20"
-            app:title="Wi-Fi Scan Activity"
+            app:title="Wi-Fi Network Scanner"
             app:titleTextColor="@android:color/white" />
 
         <LinearLayout
@@ -25,18 +25,6 @@
             android:orientation="vertical"
             android:padding="16dp"
             android:background="#f7f7f7">
-
-            <!-- Title Section -->
-            <TextView
-                android:id="@+id/titleText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Wi-Fi Network Scanner"
-                android:textSize="24sp"
-                android:textColor="#333"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:layout_marginBottom="16dp" />
 
             <!-- SSID Input Section -->
             <TextView
@@ -100,7 +88,7 @@
             <ListView
                 android:id="@+id/allNetworksListView"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:divider="#ccc"
                 android:dividerHeight="1dp"
