@@ -11,5 +11,28 @@
         android:src="@drawable/act"
         android:contentDescription="@string/app_name"
         android:scaleType="fitCenter"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="50dp"/> <!-- Adjust this value to move the logo down -->
+
+    <TextView
+        android:id="@+id/fromText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="from"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"/>
+
+    <ImageView
+        android:id="@+id/companyLogo"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:src="@drawable/inria"
+        android:contentDescription="Inria"
+        android:layout_below="@id/fromText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"/>
 </RelativeLayout>
