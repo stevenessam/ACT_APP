@@ -127,7 +127,7 @@ class WifiScanActivity : AppCompatActivity() {
             override fun run() {
                 requestWifiPermissionsAndScan()
                 if (isScanning) {
-                    handler.postDelayed(this, 30000)
+                    handler.postDelayed(this, 30000) // Scan every 30 seconds
                 }
             }
         }, 0) // Start immediately
@@ -140,11 +140,12 @@ class WifiScanActivity : AppCompatActivity() {
                     progressBar.visibility = visibility
                     scanningMessage.visibility = visibility
                     isProgressBarVisible = !isProgressBarVisible
-                    handler.postDelayed(this, if (isProgressBarVisible) 20000 else 10000)
+                    handler.postDelayed(this, if (isProgressBarVisible) 25000 else 5000) // Show for 25s, hide 5s before next scan
                 }
             }
         }, 0) // Start immediately
     }
+
 
     private fun stopScanning() {
         isScanning = false
