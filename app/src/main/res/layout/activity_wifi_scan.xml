@@ -27,7 +27,6 @@
             android:background="#f7f7f7">
 
             <!-- Scanning Status Section -->
-            <!-- Scanning Status Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -148,8 +147,9 @@
                 android:text="Clear Cache"
                 android:layout_marginTop="16dp"
                 android:padding="10dp"
-                android:background="#ee2d20"
+                android:background="@drawable/rounded_button_background"
                 android:textColor="@android:color/white"/>
+
 
         </LinearLayout>
     </LinearLayout>
