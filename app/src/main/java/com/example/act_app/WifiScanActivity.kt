@@ -180,6 +180,7 @@ class WifiScanActivity : AppCompatActivity() {
             displayWifiNetworks() // Call immediately after starting the scan
         }
     }
+
     private fun displayWifiNetworks() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             val wifiList: List<ScanResult> = wifiManager.scanResults
@@ -221,8 +222,6 @@ class WifiScanActivity : AppCompatActivity() {
             Toast.makeText(this, "Location permission required to scan Wi-Fi networks", Toast.LENGTH_SHORT).show()
         }
     }
-
-
 
     private fun updateCachedNetworksListView() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
