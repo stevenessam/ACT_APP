@@ -180,7 +180,6 @@ class WifiScanActivity : AppCompatActivity() {
             displayWifiNetworks() // Call immediately after starting the scan
         }
     }
-
     private fun displayWifiNetworks() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             val wifiList: List<ScanResult> = wifiManager.scanResults
@@ -199,11 +198,21 @@ class WifiScanActivity : AppCompatActivity() {
                     }
                 }
 
+                // Sort the allNetworks list alphabetically by SSID (case-insensitive)
+                allNetworks.sortBy {
+                    it.substringAfter("SSID: ").substringBefore("\n").lowercase()
+                }
+
+                // Sort the uniqueWifiNetworks list alphabetically by SSID (case-insensitive)
+                val sortedUniqueWifiNetworks = uniqueWifiNetworks.values.sortedBy {
+                    it.substringAfter("SSID: ").substringBefore("\n").lowercase()
+                }
+
                 // Use the custom layout for the ArrayAdapter
                 val adapterAllNetworks = ArrayAdapter(this, R.layout.list_item_custom, allNetworks)
                 allNetworksListView.adapter = adapterAllNetworks
 
-                saveSsidsToCache(uniqueWifiNetworks.values.toList())
+                saveSsidsToCache(sortedUniqueWifiNetworks)
                 updateCachedNetworksListView()
             } else {
                 Toast.makeText(this, "No Wi-Fi networks found", Toast.LENGTH_SHORT).show()
@@ -212,6 +221,8 @@ class WifiScanActivity : AppCompatActivity() {
             Toast.makeText(this, "Location permission required to scan Wi-Fi networks", Toast.LENGTH_SHORT).show()
         }
     }
+
+
 
     private fun updateCachedNetworksListView() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
