@@ -89,7 +89,7 @@ class WebAppInterface(private val context: Context) {
 
         // Check if the received data is empty
         if (data.isEmpty()) {
-            showAlertDialog("Safe Zone No Contamination", emptyList(), false)
+            showAlertDialog("Safe Zone", emptyList(), false)
             return
         }
 

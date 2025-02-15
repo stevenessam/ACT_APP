@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/dialog_background"
+    android:background="@drawable/dialog_background_with_border"
     android:elevation="10dp">
 
     <LinearLayout
