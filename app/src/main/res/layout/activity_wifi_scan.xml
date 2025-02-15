@@ -107,7 +107,7 @@
                 android:id="@+id/ssidPrefixInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter SSID prefix (e.g., 'ACT')"
+                android:hint="Enter SSID Prefix (e.g., 'ACT')"
                 android:textColorHint="#808080"
                 android:inputType="text"
                 android:textSize="16sp"
