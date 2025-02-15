@@ -7,15 +7,19 @@
     android:background="@drawable/dialog_background"
     android:elevation="10dp">
 
-    <TextView
-        android:id="@+id/alertTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textColor="@android:color/black"
+        android:orientation="horizontal"
         android:gravity="center"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp">
+
+        <ImageView
+            android:id="@+id/alertIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/alertMessage"

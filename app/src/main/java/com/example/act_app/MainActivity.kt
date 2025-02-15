@@ -24,6 +24,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
@@ -115,13 +116,17 @@ class WebAppInterface(private val context: Context) {
 
     private fun showAlertDialog(alertMessage: String, matchingSsids: List<String>, isContaminated: Boolean) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_alert, null)
-        val alertTitleView = dialogView.findViewById<TextView>(R.id.alertTitle)
+        val alertIconView = dialogView.findViewById<ImageView>(R.id.alertIcon)
         val alertMessageView = dialogView.findViewById<TextView>(R.id.alertMessage)
         val matchingSsidsView = dialogView.findViewById<TextView>(R.id.matchingSsids)
         val okButton = dialogView.findViewById<Button>(R.id.okButton)
 
-        // Set the title based on the alert type
-        alertTitleView.text = if (isContaminated) "Alert : ❗️" else "Alert : ✅"
+        // Set the icon based on the alert type
+        if (isContaminated) {
+            alertIconView.setImageResource(R.drawable.square_xmark_solid)
+        } else {
+            alertIconView.setImageResource(R.drawable.square_check_solid)
+        }
 
         // Set the message based on the alert type
         alertMessageView.text = alertMessage
