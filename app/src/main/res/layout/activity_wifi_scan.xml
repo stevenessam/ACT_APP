@@ -94,7 +94,10 @@
                 android:textSize="16sp"
                 android:padding="10dp"
                 android:background="@drawable/border"
-                android:textColor="#000" />
+                android:textColor="#000"
+                android:drawableLeft="@drawable/keyboard_regular"
+                android:drawablePadding="8dp" />
+
 
             <!-- Cached Networks List Section -->
             <TextView
