@@ -27,30 +27,49 @@
             android:background="#f7f7f7">
 
             <!-- Scanning Status Section -->
+            <!-- Scanning Status Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:gravity="center"
                 android:layout_marginBottom="10dp">
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true"
-                    android:indeterminateTint="#ee2d20"
-                    android:layout_marginEnd="8dp" />
-
+                <!-- Information about automatic scanning -->
                 <TextView
-                    android:id="@+id/scanningMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Scanning for available Wi-Fi networks..."
-                    android:textSize="16sp"
+                    android:text="Automatic Wi-Fi Network Scanning"
+                    android:textSize="14sp"
                     android:textColor="#777"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:layout_marginBottom="4dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true"
+                        android:indeterminateTint="#ee2d20"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/scanningMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Scanning for available Wi-Fi networks..."
+                        android:textSize="16sp"
+                        android:textColor="#777"
+                        android:gravity="center" />
+                </LinearLayout>
             </LinearLayout>
+
 
             <!-- All Networks List Section -->
             <TextView
