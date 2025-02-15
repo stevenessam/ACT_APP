@@ -41,7 +41,6 @@ class WifiScanActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var scanningMessage: TextView
     private var isScanning = false
-    private var isProgressBarVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,29 +122,17 @@ class WifiScanActivity : AppCompatActivity() {
 
     private fun startScanning() {
         isScanning = true
-        handler.postDelayed(object : Runnable {
+        progressBar.visibility = View.VISIBLE
+        scanningMessage.visibility = View.VISIBLE
+        handler.post(object : Runnable {
             override fun run() {
                 requestWifiPermissionsAndScan()
                 if (isScanning) {
-                    handler.postDelayed(this, 30000) // Scan every 30 seconds
+                    handler.post(this) // Continuously scan
                 }
             }
-        }, 0) // Start immediately
-
-        // Schedule the ProgressBar and TextView visibility
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                if (isScanning) {
-                    val visibility = if (isProgressBarVisible) View.INVISIBLE else View.VISIBLE
-                    progressBar.visibility = visibility
-                    scanningMessage.visibility = visibility
-                    isProgressBarVisible = !isProgressBarVisible
-                    handler.postDelayed(this, if (isProgressBarVisible) 25000 else 5000) // Show for 25s, hide 5s before next scan
-                }
-            }
-        }, 0) // Start immediately
+        })
     }
-
 
     private fun stopScanning() {
         isScanning = false
@@ -190,9 +177,7 @@ class WifiScanActivity : AppCompatActivity() {
 
     private fun scanWifiNetworks() {
         if (wifiManager.startScan()) {
-            handler.postDelayed({
-                displayWifiNetworks()
-            }, 3000)
+            displayWifiNetworks() // Call immediately after starting the scan
         }
     }
 
