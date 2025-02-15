@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
@@ -102,6 +103,9 @@ class WifiScanActivity : AppCompatActivity() {
         })
 
         requestWifiPermissionsAndScan()
+
+        // Start the background service
+        startWifiScanService()
     }
 
     override fun onResume() {
@@ -118,6 +122,12 @@ class WifiScanActivity : AppCompatActivity() {
         super.onPause()
         // Stop scanning when the activity is paused
         stopScanning()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Stop the service when the activity is destroyed
+        stopWifiScanService()
     }
 
     private fun startScanning() {
@@ -273,5 +283,19 @@ class WifiScanActivity : AppCompatActivity() {
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun startWifiScanService() {
+        val intent = Intent(this, WifiScanService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+    }
+
+    private fun stopWifiScanService() {
+        val intent = Intent(this, WifiScanService::class.java)
+        stopService(intent)
     }
 }
