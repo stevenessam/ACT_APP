@@ -26,36 +26,13 @@
             android:padding="16dp"
             android:background="#f7f7f7">
 
-            <!-- SSID Input Section -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="SSID Prefix (To Save Network In Cache)"
-                android:textSize="18sp"
-                android:textColor="#555"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/ssidPrefixInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter SSID prefix (e.g., 'ACT')"
-                android:textColorHint="#808080"
-                android:inputType="text"
-                android:textSize="16sp"
-                android:layout_marginBottom="16dp"
-                android:padding="10dp"
-                android:background="@drawable/border"
-                android:textColor="#000" />
-
             <!-- Scanning Status Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="10dp">
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -95,6 +72,29 @@
                 android:paddingTop="8dp"
                 android:background="@drawable/border"
                 android:scrollbars="vertical" />
+
+            <!-- SSID Input Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter SSID Prefix to Cache Network "
+                android:textSize="18sp"
+                android:textColor="#555"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="16dp" />
+
+            <EditText
+                android:id="@+id/ssidPrefixInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter SSID prefix (e.g., 'ACT')"
+                android:textColorHint="#808080"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:background="@drawable/border"
+                android:textColor="#000" />
 
             <!-- Cached Networks List Section -->
             <TextView
