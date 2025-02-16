@@ -8,12 +8,18 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.media.Ringtone
+import android.media.RingtoneManager
+import android.net.Uri
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -27,6 +33,7 @@ class WifiScanService : Service() {
     private val handler = Handler(Looper.getMainLooper())
     private var isScanning = false
     private val TAG = "WifiScanService"
+    private val NOTIFICATION_ID = 1
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -50,7 +57,7 @@ class WifiScanService : Service() {
 
         // Start the service with a notification
         val notification = createNotification()
-        startForeground(1, notification)
+        startForeground(NOTIFICATION_ID, notification)
 
         Log.d(TAG, "WifiScanService: Service created and started in foreground")
     }
@@ -164,16 +171,49 @@ class WifiScanService : Service() {
         }
     }
 
-
     private fun saveSsidsToCache(newSsidList: List<String>) {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         val existingSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
         val updatedSsids = existingSsids.union(newSsidList.toSet())
+
+        if (updatedSsids.size > existingSsids.size) {
+            // New SSID added, send a notification, vibrate, and play sound
+            showCachedNetworkNotification()
+            vibrate()
+            playNotificationSound()
+        }
+
         editor.putStringSet("saved_ssids", updatedSsids)
         editor.apply()
 
         Log.d(TAG, "WifiScanService: Cached Networks: $updatedSsids")
+    }
+
+    private fun showCachedNetworkNotification() {
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        val notificationBuilder = NotificationCompat.Builder(this, "wifi_scan_channel")
+            .setContentTitle("New Network Cached")
+            .setContentText("A new Wi-Fi network has been cached.")
+            .setSmallIcon(R.drawable.act)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+
+        notificationManager.notify(NOTIFICATION_ID + 1, notificationBuilder.build())
+    }
+
+    private fun vibrate() {
+        val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+        val vibrator = vibratorManager.defaultVibrator
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        }
+    }
+
+    private fun playNotificationSound() {
+        val notificationUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val ringtone: Ringtone = RingtoneManager.getRingtone(this, notificationUri)
+        ringtone.play()
     }
 
     private fun createNotification(): Notification {
