@@ -73,7 +73,7 @@ class WifiScanService : Service() {
                 if (isScanning) {
                     Log.d(TAG, "WifiScanService: Starting Wi-Fi scan")
                     requestWifiPermissionsAndScan()
-                    handler.postDelayed(this, 10000) // Scan every 10 seconds
+                    handler.postDelayed(this, 30000)
                 }
             }
         })

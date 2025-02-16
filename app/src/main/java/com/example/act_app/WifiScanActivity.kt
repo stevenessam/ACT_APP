@@ -13,6 +13,7 @@ import android.os.Handler
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -103,9 +104,6 @@ class WifiScanActivity : AppCompatActivity() {
         })
 
         requestWifiPermissionsAndScan()
-
-        // Start the background service
-        startWifiScanService()
     }
 
     override fun onResume() {
@@ -116,12 +114,16 @@ class WifiScanActivity : AppCompatActivity() {
         }
         // Optionally, refresh the cached networks list when the activity is resumed
         updateCachedNetworksListView()
+        // Stop the service when the activity is resumed
+        stopWifiScanService()
     }
 
     override fun onPause() {
         super.onPause()
         // Stop scanning when the activity is paused
         stopScanning()
+        // Start the service when the activity is paused
+        startWifiScanService()
     }
 
     override fun onDestroy() {
@@ -138,11 +140,12 @@ class WifiScanActivity : AppCompatActivity() {
             override fun run() {
                 requestWifiPermissionsAndScan()
                 if (isScanning) {
-                    handler.post(this) // Continuously scan
+                    handler.postDelayed(this, 30000)
                 }
             }
         })
     }
+
 
     private fun stopScanning() {
         isScanning = false
@@ -187,9 +190,13 @@ class WifiScanActivity : AppCompatActivity() {
 
     private fun scanWifiNetworks() {
         if (wifiManager.startScan()) {
+            Log.d("WifiScanActivity", "Wi-Fi scan started")
             displayWifiNetworks() // Call immediately after starting the scan
+        } else {
+            Log.e("WifiScanActivity", "Failed to start Wi-Fi scan")
         }
     }
+
 
     private fun displayWifiNetworks() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
