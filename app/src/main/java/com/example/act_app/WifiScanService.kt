@@ -73,7 +73,7 @@ class WifiScanService : Service() {
                 if (isScanning) {
                     Log.d(TAG, "WifiScanService: Starting Wi-Fi scan")
                     requestWifiPermissionsAndScan()
-                    handler.postDelayed(this, 30000)
+                    handler.postDelayed(this, 30000) // Scan every 30 seconds
                 }
             }
         })
@@ -129,26 +129,41 @@ class WifiScanService : Service() {
 
             if (wifiList.isNotEmpty()) {
                 val uniqueWifiNetworks = mutableMapOf<String, String>()
+                val allNetworks = mutableListOf<String>()
 
                 for (scanResult in wifiList) {
                     if (scanResult.SSID.isNotEmpty() && scanResult.BSSID.isNotEmpty()) {
                         Log.d(TAG, "WifiScanService: Scanned Network - SSID=${scanResult.SSID}, BSSID=${scanResult.BSSID}")
+                        allNetworks.add("SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID}")
                         if (scanResult.SSID.startsWith(prefix, ignoreCase = true)) {
                             uniqueWifiNetworks[scanResult.BSSID] = "SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID}"
                         }
                     }
                 }
 
+                // Sort the allNetworks list alphabetically by SSID (case-insensitive)
+                val sortedAllNetworks = allNetworks.sortedBy { it.substringAfter("SSID: ").substringBefore("\n").lowercase() }
+
+                // Save all scanned networks to shared preferences
+                val editor = sharedPreferences.edit()
+                editor.putStringSet("scanned_networks", sortedAllNetworks.toSet())
+                editor.apply()
+
                 val sortedUniqueWifiNetworks = uniqueWifiNetworks.values.sortedBy {
                     it.substringAfter("SSID: ").substringBefore("\n").lowercase()
                 }
 
                 saveSsidsToCache(sortedUniqueWifiNetworks)
+
+                // Send a broadcast to notify the activity of the update
+                val intent = Intent("com.example.act_app.WIFI_UPDATE")
+                sendBroadcast(intent)
             } else {
                 Log.d(TAG, "WifiScanService: No Wi-Fi networks found")
             }
         }
     }
+
 
     private fun saveSsidsToCache(newSsidList: List<String>) {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
