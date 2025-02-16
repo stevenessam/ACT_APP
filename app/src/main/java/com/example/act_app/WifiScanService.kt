@@ -203,12 +203,22 @@ class WifiScanService : Service() {
     }
 
     private fun vibrate() {
-        val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-        val vibrator = vibratorManager.defaultVibrator
-        if (vibrator.hasVibrator()) {
-            vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Use VibratorManager for API level 31 and above
+            val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            val vibrator = vibratorManager.defaultVibrator
+            if (vibrator.hasVibrator()) {
+                vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+            }
+        } else {
+            // Use Vibrator for API levels below 31
+            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (vibrator.hasVibrator()) {
+                vibrator.vibrate(500)
+            }
         }
     }
+
 
     private fun playNotificationSound() {
         val notificationUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)

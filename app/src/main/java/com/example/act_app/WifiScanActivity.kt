@@ -40,6 +40,14 @@ class WifiScanActivity : AppCompatActivity() {
     private lateinit var scanningMessage: TextView
     private lateinit var wifiUpdateReceiver: BroadcastReceiver
 
+    private val REQUEST_CODE_PERMISSIONS = 1001
+    private val REQUIRED_PERMISSIONS = arrayOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_WIFI_STATE,
+        Manifest.permission.CHANGE_WIFI_STATE
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wifi_scan)
@@ -108,8 +116,13 @@ class WifiScanActivity : AppCompatActivity() {
         val intentFilter = IntentFilter("com.example.act_app.WIFI_UPDATE")
         registerReceiver(wifiUpdateReceiver, intentFilter, RECEIVER_EXPORTED)
 
-        // Start the Wi-Fi scan service
-        startWifiScanService()
+        // Check and request permissions
+        if (!hasPermissions()) {
+            requestPermissions()
+        } else {
+            // Start the Wi-Fi scan service
+            startWifiScanService()
+        }
     }
 
     override fun onResume() {
@@ -148,7 +161,6 @@ class WifiScanActivity : AppCompatActivity() {
         cachedNetworksListView.adapter = adapterCachedNetworks
     }
 
-
     private fun clearWifiCache() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -181,5 +193,28 @@ class WifiScanActivity : AppCompatActivity() {
     private fun stopWifiScanService() {
         val intent = Intent(this, WifiScanService::class.java)
         stopService(intent)
+    }
+
+    private fun hasPermissions(): Boolean {
+        return REQUIRED_PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                // Permissions granted, start the Wi-Fi scan service
+                startWifiScanService()
+            } else {
+                // Permissions denied, show a message to the user
+                Toast.makeText(this, "Permissions are required to scan Wi-Fi networks", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
