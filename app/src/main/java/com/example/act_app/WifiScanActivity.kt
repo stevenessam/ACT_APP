@@ -60,7 +60,7 @@ class WifiScanActivity : AppCompatActivity() {
 
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_main -> {
+                R.id.nav_act_map -> {
                     startActivity(Intent(this, ACTMapActivity::class.java))
                 }
                 R.id.nav_wifi_scan -> {
