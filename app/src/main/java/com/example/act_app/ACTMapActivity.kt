@@ -118,6 +118,7 @@ class WebAppInterface(private val context: Context) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_alert, null)
         val alertIconView = dialogView.findViewById<ImageView>(R.id.alertIcon)
         val alertMessageView = dialogView.findViewById<TextView>(R.id.alertMessage)
+        val matchingSsidsLabelView = dialogView.findViewById<TextView>(R.id.matchingSsidsLabel)
         val matchingSsidsView = dialogView.findViewById<TextView>(R.id.matchingSsids)
         val okButton = dialogView.findViewById<Button>(R.id.okButton)
 
@@ -133,9 +134,11 @@ class WebAppInterface(private val context: Context) {
 
         // Show matching SSIDs if contaminated
         if (isContaminated && matchingSsids.isNotEmpty()) {
-            matchingSsidsView.text = "Matching SSIDs: ${matchingSsids.joinToString(", ")}"
+            matchingSsidsLabelView.visibility = View.VISIBLE
+            matchingSsidsView.text = matchingSsids.joinToString(", ")
             matchingSsidsView.visibility = View.VISIBLE
         } else {
+            matchingSsidsLabelView.visibility = View.GONE
             matchingSsidsView.visibility = View.GONE
         }
 
