@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/dialog_background_with_border"
+    android:background="@drawable/dialog_background"
     android:elevation="10dp">
 
     <LinearLayout
@@ -55,7 +55,7 @@
 
     <Button
         android:id="@+id/okButton"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="OK"
         android:layout_marginTop="16dp"

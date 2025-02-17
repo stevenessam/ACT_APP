@@ -122,10 +122,12 @@ class WebAppInterface(private val context: Context) {
         val matchingSsidsView = dialogView.findViewById<TextView>(R.id.matchingSsids)
         val okButton = dialogView.findViewById<Button>(R.id.okButton)
 
-        // Set the icon based on the alert type
+        // Set the background drawable based on the alert type
         if (isContaminated) {
+            dialogView.setBackgroundResource(R.drawable.dialog_background_contaminated)
             alertIconView.setImageResource(R.drawable.square_xmark_solid)
         } else {
+            dialogView.setBackgroundResource(R.drawable.dialog_background_safe)
             alertIconView.setImageResource(R.drawable.square_check_solid)
         }
 
@@ -157,6 +159,7 @@ class WebAppInterface(private val context: Context) {
 
         alertDialog.show()
     }
+
 
     private fun vibratePhone() {
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
