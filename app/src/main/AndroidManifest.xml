@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".ACTMapActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
 

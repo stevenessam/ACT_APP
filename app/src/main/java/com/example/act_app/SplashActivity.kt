@@ -11,7 +11,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        // Delay the transition to the main activity
+        // Delay the transition to the WifiScanActivity
         Handler().postDelayed({
             startActivity(Intent(this, WifiScanActivity::class.java))
             finish()

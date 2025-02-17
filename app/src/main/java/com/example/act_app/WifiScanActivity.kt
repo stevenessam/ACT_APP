@@ -6,16 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.location.LocationManager
-import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -67,7 +61,7 @@ class WifiScanActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_main -> {
-                    startActivity(Intent(this, MainActivity::class.java))
+                    startActivity(Intent(this, ACTMapActivity::class.java))
                 }
                 R.id.nav_wifi_scan -> {
                     // Already in WifiScanActivity, do nothing

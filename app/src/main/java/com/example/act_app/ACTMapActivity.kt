@@ -2,15 +2,11 @@ package com.example.act_app
 
 import android.content.Context
 import android.content.Intent
-import android.media.Ringtone
-import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +15,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.app.AlertDialog
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.JavascriptInterface
@@ -27,11 +22,11 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 
-class MainActivity : AppCompatActivity() {
+class ACTMapActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.act_map_activity_main)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -48,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_main -> {
-                    // Already in MainActivity, do nothing
+                    // Already in ACTMapActivity, do nothing
                 }
                 R.id.nav_wifi_scan -> {
                     startActivity(Intent(this, WifiScanActivity::class.java))
@@ -76,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val savedSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
         for (ssid in savedSsids) {
-            Log.d("MainActivity", "Cached Network: $ssid")
+            Log.d("ACTMapActivity", "Cached Network: $ssid")
         }
     }
 }
