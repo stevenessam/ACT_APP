@@ -65,7 +65,7 @@ class ACTMapActivity : AppCompatActivity() {
         webSettings.domStorageEnabled = true
 
         webView.addJavascriptInterface(WebAppInterface(this), "Android")
-        webView.loadUrl("https://act.gitlabpages.inria.fr/website/")
+        webView.loadUrl("http://192.168.237.113/")
 
         // Retrieve and log cached Wi-Fi networks
         retrieveAndLogCachedNetworks()
@@ -79,7 +79,6 @@ class ACTMapActivity : AppCompatActivity() {
         }
     }
 }
-
 class WebAppInterface(private val context: Context) {
 
     @JavascriptInterface
@@ -103,7 +102,9 @@ class WebAppInterface(private val context: Context) {
         val matchingSsids = mutableListOf<String>()
         for (part in splitData) {
             val matches = savedSsids.filter { ssid -> ssid.contains(part, ignoreCase = true) }
-            matchingSsids.addAll(matches)
+            if (matches.isNotEmpty()) {
+                matchingSsids.add(part) // Add the SSID from the data
+            }
         }
 
         // Determine alert message based on matches
