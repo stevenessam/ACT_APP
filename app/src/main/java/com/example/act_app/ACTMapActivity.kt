@@ -65,7 +65,7 @@ class ACTMapActivity : AppCompatActivity() {
         webSettings.domStorageEnabled = true
 
         webView.addJavascriptInterface(WebAppInterface(this), "Android")
-        webView.loadUrl("http://192.168.237.113/")
+        webView.loadUrl("https://act.gitlabpages.inria.fr/website/")
 
         // Retrieve and log cached Wi-Fi networks
         retrieveAndLogCachedNetworks()
