@@ -9,4 +9,8 @@
         android:id="@+id/nav_act_map"
         android:title="ACT MAP" />
 
+    <item
+        android:id="@+id/nav_about"
+        android:title="About" />
+
 </menu>

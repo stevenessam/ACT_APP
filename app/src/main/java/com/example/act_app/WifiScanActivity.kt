@@ -66,10 +66,14 @@ class WifiScanActivity : AppCompatActivity() {
                 R.id.nav_wifi_scan -> {
                     // Already in WifiScanActivity, do nothing
                 }
+                R.id.nav_about -> {
+                    startActivity(Intent(this, AboutActivity::class.java))
+                }
             }
             drawerLayout.closeDrawers()
             true
         }
+
 
         ssidPrefixInput = findViewById(R.id.ssidPrefixInput)
         allNetworksListView = findViewById(R.id.allNetworksListView)

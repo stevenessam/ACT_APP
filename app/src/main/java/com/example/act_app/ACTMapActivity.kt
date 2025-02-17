@@ -48,10 +48,14 @@ class ACTMapActivity : AppCompatActivity() {
                 R.id.nav_wifi_scan -> {
                     startActivity(Intent(this, WifiScanActivity::class.java))
                 }
+                R.id.nav_about -> {
+                    startActivity(Intent(this, AboutActivity::class.java))
+                }
             }
             drawerLayout.closeDrawers()
             true
         }
+
 
         val webView = findViewById<WebView>(R.id.webView)
         webView.webViewClient = WebViewClient()
