@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Scanning Delay (seconds)"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textColor="#555"
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium" />
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Adjust Wi-Fi Signal Strength"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textColor="#555"
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium" />
