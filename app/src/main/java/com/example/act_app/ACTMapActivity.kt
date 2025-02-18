@@ -1,22 +1,29 @@
 package com.example.act_app
 
+import android.Manifest
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.webkit.GeolocationPermissions
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.app.AlertDialog
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.JavascriptInterface
@@ -25,6 +32,15 @@ import android.widget.ImageView
 import android.widget.TextView
 
 class ACTMapActivity : AppCompatActivity() {
+
+    private lateinit var wifiUpdateReceiver: BroadcastReceiver
+    private val REQUEST_CODE_PERMISSIONS = 1001
+    private val REQUIRED_PERMISSIONS = arrayOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_WIFI_STATE,
+        Manifest.permission.CHANGE_WIFI_STATE
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +96,44 @@ class ACTMapActivity : AppCompatActivity() {
 
         // Retrieve and log cached Wi-Fi networks
         retrieveAndLogCachedNetworks()
+
+        // Register the BroadcastReceiver to listen for updates from the service
+        wifiUpdateReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                // Update the UI with the latest scanned networks
+                retrieveAndLogCachedNetworks()
+            }
+        }
+
+        val intentFilter = IntentFilter("com.example.act_app.WIFI_UPDATE")
+        registerReceiver(wifiUpdateReceiver, intentFilter, RECEIVER_EXPORTED)
+
+        // Check and request permissions
+        if (!hasPermissions()) {
+            requestPermissions()
+        } else {
+            // Start the Wi-Fi scan service
+            startWifiScanService()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Update the UI with the latest scanned networks
+        retrieveAndLogCachedNetworks()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // No need to stop the service here as it should run in the background
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Unregister the BroadcastReceiver
+        unregisterReceiver(wifiUpdateReceiver)
+        // Stop the service when the activity is destroyed
+        stopWifiScanService()
     }
 
     private fun retrieveAndLogCachedNetworks() {
@@ -87,6 +141,43 @@ class ACTMapActivity : AppCompatActivity() {
         val savedSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
         for (ssid in savedSsids) {
             Log.d("ACTMapActivity", "Cached Network: $ssid")
+        }
+    }
+
+    private fun startWifiScanService() {
+        val intent = Intent(this, WifiScanService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+    }
+
+    private fun stopWifiScanService() {
+        val intent = Intent(this, WifiScanService::class.java)
+        stopService(intent)
+    }
+
+    private fun hasPermissions(): Boolean {
+        return REQUIRED_PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                // Permissions granted, start the Wi-Fi scan service
+                startWifiScanService()
+            } else {
+                // Permissions denied, show a message to the user
+                Toast.makeText(this, "Permissions are required to scan Wi-Fi networks", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

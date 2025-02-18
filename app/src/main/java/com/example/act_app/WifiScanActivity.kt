@@ -139,7 +139,7 @@ class WifiScanActivity : AppCompatActivity() {
             requestPermissions()
         } else {
             // Start the Wi-Fi scan service
-            startWifiScanService()
+            // startWifiScanService()
         }
     }
 

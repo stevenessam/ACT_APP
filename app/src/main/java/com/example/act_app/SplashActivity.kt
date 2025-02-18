@@ -13,7 +13,7 @@ class SplashActivity : AppCompatActivity() {
 
         // Delay the transition to the WifiScanActivity
         Handler().postDelayed({
-            startActivity(Intent(this, WifiScanActivity::class.java))
+            startActivity(Intent(this, ACTMapActivity::class.java))
             finish()
         }, 2000) // 2 seconds delay
     }

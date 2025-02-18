@@ -3,16 +3,17 @@
 
     <group android:id="@+id/group_1">
         <item
-            android:id="@+id/nav_wifi_scan"
-            android:title="Wi-Fi Network Scanner"
-            android:icon="@drawable/wifi_solid" />
-    </group>
-
-    <group android:id="@+id/group_2">
-        <item
             android:id="@+id/nav_act_map"
             android:title="ACT MAP"
             android:icon="@drawable/map_location_dot_solid"/>
+    </group>
+
+
+    <group android:id="@+id/group_2">
+        <item
+            android:id="@+id/nav_wifi_scan"
+            android:title="Wi-Fi Network Scanner"
+            android:icon="@drawable/wifi_solid" />
     </group>
 
     <group android:id="@+id/group_3">
