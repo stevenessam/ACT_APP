@@ -37,8 +37,6 @@ class WifiScanActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var scanningMessage: TextView
     private lateinit var wifiUpdateReceiver: BroadcastReceiver
-    private lateinit var signalStrengthSeekBar: SeekBar
-    private lateinit var signalStrengthValue: TextView
 
     private val REQUEST_CODE_PERMISSIONS = 1001
     private val REQUIRED_PERMISSIONS = arrayOf(
@@ -85,8 +83,6 @@ class WifiScanActivity : AppCompatActivity() {
         cachedNetworksListView = findViewById(R.id.cachedNetworksListView)
         progressBar = findViewById(R.id.progressBar)
         scanningMessage = findViewById(R.id.scanningMessage)
-        signalStrengthSeekBar = findViewById(R.id.signalStrengthSeekBar)
-        signalStrengthValue = findViewById(R.id.signalStrengthValue)
 
         val clearCacheButton: Button = findViewById(R.id.clearCacheButton)
         clearCacheButton.setOnClickListener {
@@ -107,22 +103,6 @@ class WifiScanActivity : AppCompatActivity() {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-
-        // Set initial value for the SeekBar
-        val initialThreshold = getSignalStrengthThreshold()
-        signalStrengthSeekBar.progress = initialThreshold + 100
-        signalStrengthValue.text = "$initialThreshold dBm"
-
-        signalStrengthSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val threshold = progress - 100
-                signalStrengthValue.text = "$threshold dBm"
-                saveSignalStrengthThreshold(threshold)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
         // Register the BroadcastReceiver to listen for updates from the service
@@ -239,18 +219,6 @@ class WifiScanActivity : AppCompatActivity() {
         }
     }
 
-    private fun getSignalStrengthThreshold(): Int {
-        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
-        return sharedPreferences.getInt("signal_strength_threshold", -100)
-    }
-
-    private fun saveSignalStrengthThreshold(threshold: Int) {
-        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putInt("signal_strength_threshold", threshold)
-        editor.apply()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return true
@@ -269,6 +237,8 @@ class WifiScanActivity : AppCompatActivity() {
     private fun showSettingsDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_settings, null)
         val delayInput = dialogView.findViewById<EditText>(R.id.delayInput)
+        val signalStrengthSeekBar = dialogView.findViewById<SeekBar>(R.id.signalStrengthSeekBar)
+        val signalStrengthValue = dialogView.findViewById<TextView>(R.id.signalStrengthValue)
         val saveButton = dialogView.findViewById<Button>(R.id.saveButton)
 
         // Load the last entered delay or set default to 30
@@ -276,15 +246,32 @@ class WifiScanActivity : AppCompatActivity() {
         val lastDelay = sharedPreferences.getInt("scanning_delay", 30)
         delayInput.setText(lastDelay.toString())
 
+        // Load the last signal strength threshold
+        val initialThreshold = getSignalStrengthThreshold()
+        signalStrengthSeekBar.progress = initialThreshold + 100
+        signalStrengthValue.text = "$initialThreshold dBm"
+
         val dialog = AlertDialog.Builder(this, R.style.CustomAlertDialog)
             .setTitle("Settings")
             .setView(dialogView)
             .create()
 
+        signalStrengthSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val threshold = progress - 100
+                signalStrengthValue.text = "$threshold dBm"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
         saveButton.setOnClickListener {
             val delay = delayInput.text.toString().toIntOrNull() ?: 30
             if (delay >= 20) {
                 saveScanningDelay(delay)
+                val threshold = signalStrengthSeekBar.progress - 100
+                saveSignalStrengthThreshold(threshold)
                 dialog.dismiss()
             } else {
                 Toast.makeText(this, "Delay must be at least 20 seconds", Toast.LENGTH_SHORT).show()
@@ -294,8 +281,6 @@ class WifiScanActivity : AppCompatActivity() {
         dialog.show()
     }
 
-
-
     private fun saveScanningDelay(delay: Int) {
         val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -304,5 +289,15 @@ class WifiScanActivity : AppCompatActivity() {
         Toast.makeText(this, "Scanning delay set to $delay seconds", Toast.LENGTH_SHORT).show()
     }
 
+    private fun getSignalStrengthThreshold(): Int {
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+        return sharedPreferences.getInt("signal_strength_threshold", -100)
+    }
 
+    private fun saveSignalStrengthThreshold(threshold: Int) {
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("signal_strength_threshold", threshold)
+        editor.apply()
+    }
 }
