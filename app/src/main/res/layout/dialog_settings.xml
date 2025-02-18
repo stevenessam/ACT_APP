@@ -24,7 +24,7 @@
         android:textColorHint="#808080"
         android:textSize="16sp"
         android:padding="14dp"
-        android:background="@drawable/dialog_background_contaminated"
+        android:background="@drawable/border"
         android:textColor="#555"
         android:drawableLeft="@drawable/keyboard_regular"
         android:drawablePadding="12dp"
@@ -47,7 +47,7 @@
         android:gravity="center_vertical"
         android:layout_marginBottom="16dp"
         android:padding="8dp"
-        android:background="@drawable/dialog_background_contaminated">
+        android:background="@drawable/border">
 
 
 
