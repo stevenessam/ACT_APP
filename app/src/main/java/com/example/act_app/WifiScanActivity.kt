@@ -283,7 +283,7 @@ class WifiScanActivity : AppCompatActivity() {
     }
 
     private fun saveSsidPrefix(prefix: String) {
-        val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("ssid_prefix", prefix)
         editor.apply()
