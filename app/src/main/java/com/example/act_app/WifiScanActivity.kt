@@ -10,11 +10,15 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.SeekBar
@@ -137,7 +141,7 @@ class WifiScanActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val scannedNetworks = sharedPreferences.getStringSet("scanned_networks", emptySet()) ?: emptySet()
         val sortedScannedNetworks = scannedNetworks.toList().sortedBy { it.lowercase() }
-        val adapterAllNetworks = ArrayAdapter(this, R.layout.list_item_custom, sortedScannedNetworks)
+        val adapterAllNetworks = CustomArrayAdapter(this, R.layout.list_item_custom, sortedScannedNetworks)
         allNetworksListView.adapter = adapterAllNetworks
     }
 
@@ -145,9 +149,26 @@ class WifiScanActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val savedSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
         val sortedSavedSsids = savedSsids.toList().sortedBy { it.lowercase() }
-        val adapterCachedNetworks = ArrayAdapter(this, R.layout.list_item_custom, sortedSavedSsids)
+        val adapterCachedNetworks = CustomArrayAdapter(this, R.layout.list_item_custom, sortedSavedSsids)
         cachedNetworksListView.adapter = adapterCachedNetworks
     }
+
+    class CustomArrayAdapter(context: Context, private val resource: Int, objects: List<String>) :
+        ArrayAdapter<String>(context, resource, objects) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
+            val networkName = getItem(position)
+            val textView = view.findViewById<TextView>(R.id.networkName)
+            val imageView = view.findViewById<ImageView>(R.id.wifiIcon)
+
+            textView.text = networkName
+            imageView.setImageResource(R.drawable.wifi_solid_green)
+
+            return view
+        }
+    }
+
 
     private fun clearWifiCache() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
