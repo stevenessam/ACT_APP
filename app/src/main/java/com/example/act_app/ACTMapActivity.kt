@@ -1,6 +1,5 @@
 package com.example.act_app
 
-import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -36,10 +35,10 @@ class ACTMapActivity : AppCompatActivity() {
     private lateinit var wifiUpdateReceiver: BroadcastReceiver
     private val REQUEST_CODE_PERMISSIONS = 1001
     private val REQUIRED_PERMISSIONS = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_WIFI_STATE,
-        Manifest.permission.CHANGE_WIFI_STATE
+        android.Manifest.permission.ACCESS_FINE_LOCATION,
+        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+        android.Manifest.permission.ACCESS_WIFI_STATE,
+        android.Manifest.permission.CHANGE_WIFI_STATE
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,7 +100,8 @@ class ACTMapActivity : AppCompatActivity() {
         wifiUpdateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 // Update the UI with the latest scanned networks
-                retrieveAndLogCachedNetworks()
+                updateScannedNetworksListView()
+                updateCachedNetworksListView()
             }
         }
 
@@ -120,7 +120,8 @@ class ACTMapActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         // Update the UI with the latest scanned networks
-        retrieveAndLogCachedNetworks()
+        updateScannedNetworksListView()
+        updateCachedNetworksListView()
     }
 
     override fun onPause() {
@@ -134,6 +135,20 @@ class ACTMapActivity : AppCompatActivity() {
         unregisterReceiver(wifiUpdateReceiver)
         // Stop the service when the activity is destroyed
         stopWifiScanService()
+    }
+
+    private fun updateScannedNetworksListView() {
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+        val scannedNetworks = sharedPreferences.getStringSet("scanned_networks", emptySet()) ?: emptySet()
+        val sortedScannedNetworks = scannedNetworks.toList().sortedBy { it.lowercase() }
+        // Update your UI with sortedScannedNetworks
+    }
+
+    private fun updateCachedNetworksListView() {
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+        val savedSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
+        val sortedSavedSsids = savedSsids.toList().sortedBy { it.lowercase() }
+        // Update your UI with sortedSavedSsids
     }
 
     private fun retrieveAndLogCachedNetworks() {
