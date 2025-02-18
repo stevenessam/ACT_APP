@@ -217,7 +217,7 @@ class WifiScanActivity : AppCompatActivity() {
         val saveButton = dialogView.findViewById<Button>(R.id.saveButton)
 
         // Load the last entered delay or set default to 30
-        val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val lastDelay = sharedPreferences.getInt("scanning_delay", 30)
         delayInput.setText(lastDelay.toString())
 
@@ -262,6 +262,7 @@ class WifiScanActivity : AppCompatActivity() {
 
         dialog.show()
     }
+
 
     private fun saveScanningDelay(delay: Int) {
         val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)
