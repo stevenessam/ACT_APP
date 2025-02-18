@@ -6,7 +6,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
+import android.webkit.GeolocationPermissions
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import android.app.AlertDialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.JavascriptInterface
@@ -56,13 +58,22 @@ class ACTMapActivity : AppCompatActivity() {
             true
         }
 
-
         val webView = findViewById<WebView>(R.id.webView)
         webView.webViewClient = WebViewClient()
+
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onGeolocationPermissionsShowPrompt(
+                origin: String?,
+                callback: GeolocationPermissions.Callback?
+            ) {
+                callback?.invoke(origin, true, false)
+            }
+        }
 
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
         webSettings.domStorageEnabled = true
+        webSettings.setGeolocationEnabled(true) // Enable geolocation
 
         webView.addJavascriptInterface(WebAppInterface(this), "Android")
         webView.loadUrl("https://act.gitlabpages.inria.fr/website/")
@@ -79,6 +90,7 @@ class ACTMapActivity : AppCompatActivity() {
         }
     }
 }
+
 class WebAppInterface(private val context: Context) {
 
     @JavascriptInterface
@@ -159,7 +171,6 @@ class WebAppInterface(private val context: Context) {
 
         alertDialog.show()
     }
-
 
     private fun vibratePhone() {
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
