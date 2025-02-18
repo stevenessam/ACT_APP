@@ -82,38 +82,13 @@
             <ListView
                 android:id="@+id/allNetworksListView"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="70dp"
                 android:layout_weight="1"
                 android:divider="#ccc"
                 android:dividerHeight="1dp"
                 android:paddingTop="8dp"
                 android:background="@drawable/border"
                 android:scrollbars="vertical" />
-
-            <!-- SSID Input Section -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Enter SSID Prefix to Cache Network "
-                android:textSize="18sp"
-                android:textColor="#555"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="16dp" />
-
-            <EditText
-                android:id="@+id/ssidPrefixInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter SSID Prefix (e.g., 'ACT')"
-                android:textColorHint="#808080"
-                android:inputType="text"
-                android:textSize="16sp"
-                android:padding="10dp"
-                android:background="@drawable/border"
-                android:textColor="#000"
-                android:drawableLeft="@drawable/keyboard_regular"
-                android:drawablePadding="8dp" />
 
             <!-- Cached Networks List Section -->
             <TextView
@@ -150,6 +125,7 @@
 
         </LinearLayout>
     </LinearLayout>
+
     <!-- Navigation Drawer Section -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"

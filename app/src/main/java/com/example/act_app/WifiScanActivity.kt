@@ -31,7 +31,6 @@ import androidx.appcompat.app.AlertDialog
 
 class WifiScanActivity : AppCompatActivity() {
 
-    private lateinit var ssidPrefixInput: EditText
     private lateinit var allNetworksListView: ListView
     private lateinit var cachedNetworksListView: ListView
     private lateinit var progressBar: ProgressBar
@@ -78,7 +77,6 @@ class WifiScanActivity : AppCompatActivity() {
             true
         }
 
-        ssidPrefixInput = findViewById(R.id.ssidPrefixInput)
         allNetworksListView = findViewById(R.id.allNetworksListView)
         cachedNetworksListView = findViewById(R.id.cachedNetworksListView)
         progressBar = findViewById(R.id.progressBar)
@@ -91,19 +89,8 @@ class WifiScanActivity : AppCompatActivity() {
             Toast.makeText(this, "Cache Cleared", Toast.LENGTH_SHORT).show()
         }
 
-        // Load cached networks and SSID prefix when the activity is created
+        // Load cached networks when the activity is created
         updateCachedNetworksListView()
-        loadSsidPrefix()
-
-        // Save SSID prefix whenever it changes
-        ssidPrefixInput.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                saveSsidPrefix(s.toString())
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
 
         // Register the BroadcastReceiver to listen for updates from the service
         wifiUpdateReceiver = object : BroadcastReceiver() {
@@ -169,19 +156,6 @@ class WifiScanActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    private fun saveSsidPrefix(prefix: String) {
-        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("ssid_prefix", prefix)
-        editor.apply()
-    }
-
-    private fun loadSsidPrefix() {
-        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
-        val prefix = sharedPreferences.getString("ssid_prefix", "") ?: ""
-        ssidPrefixInput.setText(prefix)
-    }
-
     private fun startWifiScanService() {
         val intent = Intent(this, WifiScanService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -237,6 +211,7 @@ class WifiScanActivity : AppCompatActivity() {
     private fun showSettingsDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_settings, null)
         val delayInput = dialogView.findViewById<EditText>(R.id.delayInput)
+        val ssidPrefixInputDialog = dialogView.findViewById<EditText>(R.id.ssidPrefixInput)
         val signalStrengthSeekBar = dialogView.findViewById<SeekBar>(R.id.signalStrengthSeekBar)
         val signalStrengthValue = dialogView.findViewById<TextView>(R.id.signalStrengthValue)
         val saveButton = dialogView.findViewById<Button>(R.id.saveButton)
@@ -245,6 +220,10 @@ class WifiScanActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)
         val lastDelay = sharedPreferences.getInt("scanning_delay", 30)
         delayInput.setText(lastDelay.toString())
+
+        // Load the last SSID prefix
+        val prefix = sharedPreferences.getString("ssid_prefix", "") ?: ""
+        ssidPrefixInputDialog.setText(prefix)
 
         // Load the last signal strength threshold
         val initialThreshold = getSignalStrengthThreshold()
@@ -272,6 +251,8 @@ class WifiScanActivity : AppCompatActivity() {
                 saveScanningDelay(delay)
                 val threshold = signalStrengthSeekBar.progress - 100
                 saveSignalStrengthThreshold(threshold)
+                val newPrefix = ssidPrefixInputDialog.text.toString()
+                saveSsidPrefix(newPrefix)
                 Toast.makeText(this, "Settings saved", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             } else {
@@ -298,6 +279,13 @@ class WifiScanActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putInt("signal_strength_threshold", threshold)
+        editor.apply()
+    }
+
+    private fun saveSsidPrefix(prefix: String) {
+        val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("ssid_prefix", prefix)
         editor.apply()
     }
 }
