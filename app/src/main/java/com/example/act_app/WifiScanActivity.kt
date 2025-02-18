@@ -272,6 +272,7 @@ class WifiScanActivity : AppCompatActivity() {
                 saveScanningDelay(delay)
                 val threshold = signalStrengthSeekBar.progress - 100
                 saveSignalStrengthThreshold(threshold)
+                Toast.makeText(this, "Settings saved", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             } else {
                 Toast.makeText(this, "Delay must be at least 20 seconds", Toast.LENGTH_SHORT).show()
@@ -286,7 +287,6 @@ class WifiScanActivity : AppCompatActivity() {
         val editor = sharedPreferences.edit()
         editor.putInt("scanning_delay", delay)
         editor.apply()
-        Toast.makeText(this, "Scanning delay set to $delay seconds", Toast.LENGTH_SHORT).show()
     }
 
     private fun getSignalStrengthThreshold(): Int {
