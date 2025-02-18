@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.ProgressBar
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +34,8 @@ class WifiScanActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var scanningMessage: TextView
     private lateinit var wifiUpdateReceiver: BroadcastReceiver
+    private lateinit var signalStrengthSeekBar: SeekBar
+    private lateinit var signalStrengthValue: TextView
 
     private val REQUEST_CODE_PERMISSIONS = 1001
     private val REQUIRED_PERMISSIONS = arrayOf(
@@ -74,12 +77,13 @@ class WifiScanActivity : AppCompatActivity() {
             true
         }
 
-
         ssidPrefixInput = findViewById(R.id.ssidPrefixInput)
         allNetworksListView = findViewById(R.id.allNetworksListView)
         cachedNetworksListView = findViewById(R.id.cachedNetworksListView)
         progressBar = findViewById(R.id.progressBar)
         scanningMessage = findViewById(R.id.scanningMessage)
+        signalStrengthSeekBar = findViewById(R.id.signalStrengthSeekBar)
+        signalStrengthValue = findViewById(R.id.signalStrengthValue)
 
         val clearCacheButton: Button = findViewById(R.id.clearCacheButton)
         clearCacheButton.setOnClickListener {
@@ -100,6 +104,22 @@ class WifiScanActivity : AppCompatActivity() {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        // Set initial value for the SeekBar
+        val initialThreshold = getSignalStrengthThreshold()
+        signalStrengthSeekBar.progress = initialThreshold + 100
+        signalStrengthValue.text = "$initialThreshold dBm"
+
+        signalStrengthSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val threshold = progress - 100
+                signalStrengthValue.text = "$threshold dBm"
+                saveSignalStrengthThreshold(threshold)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
         // Register the BroadcastReceiver to listen for updates from the service
@@ -214,5 +234,17 @@ class WifiScanActivity : AppCompatActivity() {
                 Toast.makeText(this, "Permissions are required to scan Wi-Fi networks", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun getSignalStrengthThreshold(): Int {
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+        return sharedPreferences.getInt("signal_strength_threshold", -100)
+    }
+
+    private fun saveSignalStrengthThreshold(threshold: Int) {
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("signal_strength_threshold", threshold)
+        editor.apply()
     }
 }

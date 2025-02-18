@@ -69,7 +69,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-
             <!-- All Networks List Section -->
             <TextView
                 android:layout_width="match_parent"
@@ -79,6 +78,45 @@
                 android:textColor="#555"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
+
+            <!-- Signal Strength Threshold Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp"
+                android:padding="3dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Adjust Wi-Fi Signal:"
+                    android:textSize="14sp"
+                    android:textColor="#777"
+                    android:layout_marginEnd="8dp" />
+
+                <SeekBar
+                    android:id="@+id/signalStrengthSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="100"
+                    android:progress="50"
+                    android:progressTint="#ee2d20"
+                    android:thumbTint="#ee2d20" />
+
+
+                <TextView
+                    android:id="@+id/signalStrengthValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-70 dBm"
+                    android:textSize="14sp"
+                    android:textColor="#000"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+
 
             <ListView
                 android:id="@+id/allNetworksListView"

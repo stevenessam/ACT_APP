@@ -133,14 +133,15 @@ class WifiScanService : Service() {
             val wifiList: List<ScanResult> = wifiManager.scanResults
             val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
             val prefix = sharedPreferences.getString("ssid_prefix", "") ?: ""
+            val signalStrengthThreshold = sharedPreferences.getInt("signal_strength_threshold", -100)
 
             if (wifiList.isNotEmpty()) {
                 val uniqueWifiNetworks = mutableMapOf<String, String>()
                 val allNetworks = mutableListOf<String>()
 
                 for (scanResult in wifiList) {
-                    if (scanResult.SSID.isNotEmpty() && scanResult.BSSID.isNotEmpty()) {
-                        Log.d(TAG, "WifiScanService: Scanned Network - SSID=${scanResult.SSID}, BSSID=${scanResult.BSSID}")
+                    if (scanResult.SSID.isNotEmpty() && scanResult.BSSID.isNotEmpty() && scanResult.level >= signalStrengthThreshold) {
+                        Log.d(TAG, "WifiScanService: Scanned Network - SSID=${scanResult.SSID}, BSSID=${scanResult.BSSID}, Level=${scanResult.level} dBm")
                         allNetworks.add("SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID}")
                         if (scanResult.SSID.startsWith(prefix, ignoreCase = true)) {
                             uniqueWifiNetworks[scanResult.BSSID] = "SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID}"
@@ -170,6 +171,8 @@ class WifiScanService : Service() {
             }
         }
     }
+
+
 
     private fun saveSsidsToCache(newSsidList: List<String>) {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
