@@ -80,11 +80,19 @@ class WifiScanService : Service() {
                 if (isScanning) {
                     Log.d(TAG, "WifiScanService: Starting Wi-Fi scan")
                     requestWifiPermissionsAndScan()
-                    handler.postDelayed(this, 30000) // Scan every 30 seconds
+                    val delay = getScanningDelay()
+                    handler.postDelayed(this, delay * 1000L) // Convert seconds to milliseconds
                 }
             }
         })
     }
+
+    private fun getScanningDelay(): Int {
+        val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)
+        return sharedPreferences.getInt("scanning_delay", 30)
+    }
+
+
 
     private fun stopScanning() {
         isScanning = false

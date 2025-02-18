@@ -10,6 +10,8 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -25,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 
 class WifiScanActivity : AppCompatActivity() {
 
@@ -247,4 +250,59 @@ class WifiScanActivity : AppCompatActivity() {
         editor.putInt("signal_strength_threshold", threshold)
         editor.apply()
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_settings -> {
+                showSettingsDialog()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showSettingsDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_settings, null)
+        val delayInput = dialogView.findViewById<EditText>(R.id.delayInput)
+        val saveButton = dialogView.findViewById<Button>(R.id.saveButton)
+
+        // Load the last entered delay or set default to 30
+        val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)
+        val lastDelay = sharedPreferences.getInt("scanning_delay", 30)
+        delayInput.setText(lastDelay.toString())
+
+        val dialog = AlertDialog.Builder(this, R.style.CustomAlertDialog)
+            .setTitle("Settings")
+            .setView(dialogView)
+            .create()
+
+        saveButton.setOnClickListener {
+            val delay = delayInput.text.toString().toIntOrNull() ?: 30
+            if (delay >= 20) {
+                saveScanningDelay(delay)
+                dialog.dismiss()
+            } else {
+                Toast.makeText(this, "Delay must be at least 20 seconds", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.show()
+    }
+
+
+
+    private fun saveScanningDelay(delay: Int) {
+        val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("scanning_delay", delay)
+        editor.apply()
+        Toast.makeText(this, "Scanning delay set to $delay seconds", Toast.LENGTH_SHORT).show()
+    }
+
+
 }

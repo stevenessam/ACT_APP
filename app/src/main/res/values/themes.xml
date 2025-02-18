@@ -8,4 +8,16 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:statusBarColor">#ee2d20</item>
     </style>
+
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textColor">#555</item>
+        <item name="android:background">#f7f7f7</item>
+        <item name="buttonBarPositiveButtonStyle">@style/CustomButtonStyle</item>
+    </style>
+
+    <style name="CustomButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">#ee2d20</item>
+    </style>
+
 </resources>

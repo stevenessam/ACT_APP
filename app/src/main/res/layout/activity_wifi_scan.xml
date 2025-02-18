@@ -131,14 +131,14 @@
 
             <!-- SSID Input Section -->
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="381dp"
                 android:layout_height="wrap_content"
-                android:text="Enter SSID Prefix to Cache Network "
-                android:textSize="18sp"
-                android:textColor="#555"
-                android:textStyle="bold"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="16dp" />
+                android:text="Enter SSID Prefix to Cache Network "
+                android:textColor="#555"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/ssidPrefixInput"
