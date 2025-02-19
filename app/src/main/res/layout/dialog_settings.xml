@@ -106,7 +106,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Clear network cache"
+            android:text="Clear Cached Network"
             android:fontFamily="sans-serif-medium"
             android:textSize="18sp"
             android:textColor="#333"
