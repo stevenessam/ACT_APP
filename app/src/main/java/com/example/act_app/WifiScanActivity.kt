@@ -189,6 +189,10 @@ class WifiScanActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
         }
     }
+    private fun getScanningDelay(): Int {
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+        return sharedPreferences.getInt("scanning_delay", 30)
+    }
 
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
@@ -233,7 +237,7 @@ class WifiScanActivity : AppCompatActivity() {
 
         // Load the last entered delay or set default to 30
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
-        val lastDelay = sharedPreferences.getInt("scanning_delay", 30)
+        val lastDelay = getScanningDelay()
         delayInput.setText(lastDelay.toString())
 
         // Load the last SSID prefix
@@ -285,8 +289,9 @@ class WifiScanActivity : AppCompatActivity() {
         dialog.show()
     }
 
+
     private fun saveScanningDelay(delay: Int) {
-        val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putInt("scanning_delay", delay)
         editor.apply()

@@ -88,7 +88,7 @@ class WifiScanService : Service() {
     }
 
     private fun getScanningDelay(): Int {
-        val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         return sharedPreferences.getInt("scanning_delay", 30)
     }
 
