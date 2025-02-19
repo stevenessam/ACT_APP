@@ -33,6 +33,7 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 
+
 class WifiScanActivity : AppCompatActivity() {
 
     private lateinit var allNetworksListView: ListView
@@ -85,13 +86,6 @@ class WifiScanActivity : AppCompatActivity() {
         cachedNetworksListView = findViewById(R.id.cachedNetworksListView)
         progressBar = findViewById(R.id.progressBar)
         scanningMessage = findViewById(R.id.scanningMessage)
-
-        val clearCacheButton: Button = findViewById(R.id.clearCacheButton)
-        clearCacheButton.setOnClickListener {
-            clearWifiCache()
-            updateCachedNetworksListView()
-            Toast.makeText(this, "Cache Cleared", Toast.LENGTH_SHORT).show()
-        }
 
         // Load cached networks when the activity is created
         updateCachedNetworksListView()
@@ -169,7 +163,6 @@ class WifiScanActivity : AppCompatActivity() {
         }
     }
 
-
     private fun clearWifiCache() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -236,6 +229,7 @@ class WifiScanActivity : AppCompatActivity() {
         val signalStrengthSeekBar = dialogView.findViewById<SeekBar>(R.id.signalStrengthSeekBar)
         val signalStrengthValue = dialogView.findViewById<TextView>(R.id.signalStrengthValue)
         val saveButton = dialogView.findViewById<Button>(R.id.saveButton)
+        val clearCacheButton = dialogView.findViewById<Button>(R.id.clearCacheButton)
 
         // Load the last entered delay or set default to 30
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
@@ -281,9 +275,15 @@ class WifiScanActivity : AppCompatActivity() {
             }
         }
 
+        clearCacheButton.setOnClickListener {
+            clearWifiCache()
+            updateCachedNetworksListView()
+            Toast.makeText(this, "Cache Cleared", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+
         dialog.show()
     }
-
 
     private fun saveScanningDelay(delay: Int) {
         val sharedPreferences = getSharedPreferences("wifi_scan_settings", Context.MODE_PRIVATE)

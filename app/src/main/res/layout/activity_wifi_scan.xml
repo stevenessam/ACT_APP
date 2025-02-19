@@ -112,16 +112,6 @@
                 android:background="@drawable/border"
                 android:scrollbars="vertical" />
 
-            <!-- Clear Cache Button Section -->
-            <Button
-                android:id="@+id/clearCacheButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Clear Cache"
-                android:layout_marginTop="16dp"
-                android:padding="10dp"
-                android:background="@drawable/rounded_button_background"
-                android:textColor="@android:color/white"/>
 
         </LinearLayout>
     </LinearLayout>
