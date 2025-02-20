@@ -92,8 +92,6 @@ class WifiScanService : Service() {
         return sharedPreferences.getInt("scanning_delay", 30)
     }
 
-
-
     private fun stopScanning() {
         isScanning = false
         handler.removeCallbacksAndMessages(null)
@@ -136,57 +134,15 @@ class WifiScanService : Service() {
         }
     }
 
-    private fun displayWifiNetworks() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            val wifiList: List<ScanResult> = wifiManager.scanResults
-            val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
-            val prefix = sharedPreferences.getString("ssid_prefix", "") ?: ""
-            val signalStrengthThreshold = sharedPreferences.getInt("signal_strength_threshold", -100)
-
-            if (wifiList.isNotEmpty()) {
-                val uniqueWifiNetworks = mutableMapOf<String, String>()
-                val allNetworks = mutableListOf<String>()
-
-                for (scanResult in wifiList) {
-                    if (scanResult.SSID.isNotEmpty() && scanResult.BSSID.isNotEmpty() && scanResult.level >= signalStrengthThreshold) {
-                        Log.d(TAG, "WifiScanService: Scanned Network - SSID=${scanResult.SSID}, BSSID=${scanResult.BSSID}, Level=${scanResult.level} dBm")
-                        allNetworks.add("SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID}")
-                        if (scanResult.SSID.startsWith(prefix, ignoreCase = true)) {
-                            uniqueWifiNetworks[scanResult.BSSID] = "SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID}"
-                        }
-                    }
-                }
-
-                // Sort the allNetworks list alphabetically by SSID (case-insensitive)
-                val sortedAllNetworks = allNetworks.sortedBy { it.substringAfter("SSID: ").substringBefore("\n").lowercase() }
-
-                // Save all scanned networks to shared preferences
-                val editor = sharedPreferences.edit()
-                editor.putStringSet("scanned_networks", sortedAllNetworks.toSet())
-                editor.apply()
-
-                val sortedUniqueWifiNetworks = uniqueWifiNetworks.values.sortedBy {
-                    it.substringAfter("SSID: ").substringBefore("\n").lowercase()
-                }
-
-                saveSsidsToCache(sortedUniqueWifiNetworks)
-
-                // Send a broadcast to notify the activity of the update
-                val intent = Intent("com.example.act_app.WIFI_UPDATE")
-                sendBroadcast(intent)
-            } else {
-                Log.d(TAG, "WifiScanService: No Wi-Fi networks found")
-            }
-        }
-    }
-
-
-
     private fun saveSsidsToCache(newSsidList: List<String>) {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         val existingSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
-        val updatedSsids = existingSsids.union(newSsidList.toSet())
+        val existingBssids = existingSsids.map { it.substringAfter("BSSID: ").substringBefore(" \n") }.toSet()
+        val updatedSsids = existingSsids.union(newSsidList.filter {
+            val bssid = it.substringAfter("BSSID: ").substringBefore(" \n")
+            !existingBssids.contains(bssid)
+        }.toSet())
 
         if (updatedSsids.size > existingSsids.size) {
             // New SSID added, send a notification, vibrate, and play sound
@@ -199,6 +155,51 @@ class WifiScanService : Service() {
         editor.apply()
 
         Log.d(TAG, "WifiScanService: Cached Networks: $updatedSsids")
+    }
+
+    private fun displayWifiNetworks() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            val wifiList: List<ScanResult> = wifiManager.scanResults
+            val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
+            val prefix = sharedPreferences.getString("ssid_prefix", "") ?: ""
+            val signalStrengthThreshold = sharedPreferences.getInt("signal_strength_threshold", -100)
+
+            if (wifiList.isNotEmpty()) {
+                val uniqueWifiNetworks = mutableMapOf<String, String>()
+                val allNetworks = mutableListOf<Pair<String, Int>>()
+
+                for (scanResult in wifiList) {
+                    if (scanResult.SSID.isNotEmpty() && scanResult.BSSID.isNotEmpty() && scanResult.level >= signalStrengthThreshold) {
+                        Log.d(TAG, "WifiScanService: Scanned Network - SSID=${scanResult.SSID}, BSSID=${scanResult.BSSID}, Level=${scanResult.level} dBm")
+                        val networkInfo = "SSID: ${scanResult.SSID} \nBSSID: ${scanResult.BSSID} \nLevel: ${scanResult.level} dBm"
+                        allNetworks.add(Pair(networkInfo, scanResult.level))
+                        if (scanResult.SSID.startsWith(prefix, ignoreCase = true)) {
+                            uniqueWifiNetworks[scanResult.BSSID] = networkInfo
+                        }
+                    }
+                }
+
+                // Sort the allNetworks list by signal strength (dBm level)
+                val sortedAllNetworks = allNetworks.sortedByDescending { it.second }.map { it.first }
+
+                // Save all scanned networks to shared preferences
+                val editor = sharedPreferences.edit()
+                editor.putStringSet("scanned_networks", sortedAllNetworks.toSet())
+                editor.apply()
+
+                val sortedUniqueWifiNetworks = uniqueWifiNetworks.values.sortedByDescending {
+                    it.substringAfter("Level: ").substringBefore(" dBm").toIntOrNull() ?: Int.MIN_VALUE
+                }
+
+                saveSsidsToCache(sortedUniqueWifiNetworks)
+
+                // Send a broadcast to notify the activity of the update
+                val intent = Intent("com.example.act_app.WIFI_UPDATE")
+                sendBroadcast(intent)
+            } else {
+                Log.d(TAG, "WifiScanService: No Wi-Fi networks found")
+            }
+        }
     }
 
     private fun showCachedNetworkNotification() {
@@ -229,7 +230,6 @@ class WifiScanService : Service() {
             }
         }
     }
-
 
     private fun playNotificationSound() {
         val notificationUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)

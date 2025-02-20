@@ -33,7 +33,6 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 
-
 class WifiScanActivity : AppCompatActivity() {
 
     private lateinit var allNetworksListView: ListView
@@ -134,17 +133,35 @@ class WifiScanActivity : AppCompatActivity() {
     private fun updateScannedNetworksListView() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val scannedNetworks = sharedPreferences.getStringSet("scanned_networks", emptySet()) ?: emptySet()
-        val sortedScannedNetworks = scannedNetworks.toList().sortedBy { it.lowercase() }
+        val sortedScannedNetworks = scannedNetworks.toList().sortedByDescending {
+            extractSignalStrength(it)
+        }
         val adapterAllNetworks = CustomArrayAdapter(this, R.layout.list_item_custom, sortedScannedNetworks)
         allNetworksListView.adapter = adapterAllNetworks
     }
 
+
     private fun updateCachedNetworksListView() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
         val savedSsids = sharedPreferences.getStringSet("saved_ssids", emptySet()) ?: emptySet()
-        val sortedSavedSsids = savedSsids.toList().sortedBy { it.lowercase() }
+        val sortedSavedSsids = savedSsids.toList().sortedByDescending {
+            extractSignalStrength(it)
+        }
         val adapterCachedNetworks = CustomArrayAdapter(this, R.layout.list_item_custom, sortedSavedSsids)
         cachedNetworksListView.adapter = adapterCachedNetworks
+    }
+
+    private fun extractSignalStrength(networkName: String): Int {
+        val levelPrefix = "Level: "
+        val levelStart = networkName.indexOf(levelPrefix)
+        if (levelStart != -1) {
+            val levelEnd = networkName.indexOf(" dBm", levelStart)
+            if (levelEnd != -1) {
+                val levelString = networkName.substring(levelStart + levelPrefix.length, levelEnd)
+                return levelString.toIntOrNull() ?: Int.MIN_VALUE
+            }
+        }
+        return Int.MIN_VALUE
     }
 
     class CustomArrayAdapter(context: Context, private val resource: Int, objects: List<String>) :
@@ -156,12 +173,39 @@ class WifiScanActivity : AppCompatActivity() {
             val textView = view.findViewById<TextView>(R.id.networkName)
             val imageView = view.findViewById<ImageView>(R.id.wifiIcon)
 
-            textView.text = networkName
-            imageView.setImageResource(R.drawable.wifi_solid_green)
+            // Use the Elvis operator to provide a default value if networkName is null
+            textView.text = networkName ?: "Unknown Network"
+
+            // Assuming the signal strength is part of the networkName string
+            val signalStrength = extractSignalStrength(networkName)
+            val iconResId = when {
+                signalStrength >= -50 -> R.drawable.wifi_solid_green
+                signalStrength >= -70 -> R.drawable.wifi_solid_yellow
+                else -> R.drawable.wifi_solid
+            }
+            imageView.setImageResource(iconResId)
 
             return view
         }
+
+        private fun extractSignalStrength(networkName: String?): Int {
+            // Extract the signal strength from the networkName string
+            // Assuming the format is "SSID: <SSID> \nBSSID: <BSSID> \nLevel: <signalStrength> dBm"
+            if (networkName == null) return Int.MIN_VALUE
+
+            val levelPrefix = "Level: "
+            val levelStart = networkName.indexOf(levelPrefix)
+            if (levelStart != -1) {
+                val levelEnd = networkName.indexOf(" dBm", levelStart)
+                if (levelEnd != -1) {
+                    val levelString = networkName.substring(levelStart + levelPrefix.length, levelEnd)
+                    return levelString.toIntOrNull() ?: Int.MIN_VALUE
+                }
+            }
+            return Int.MIN_VALUE
+        }
     }
+
 
     private fun clearWifiCache() {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
@@ -288,7 +332,6 @@ class WifiScanActivity : AppCompatActivity() {
 
         dialog.show()
     }
-
 
     private fun saveScanningDelay(delay: Int) {
         val sharedPreferences = getSharedPreferences("wifi_cache", Context.MODE_PRIVATE)
