@@ -30,7 +30,7 @@ act_app/
     |   |               |-- SplashActivity.kt
     |   |               |-- WifiScanActivity.kt
     |   |               |-- WifiScanService.kt
-    |
+    |   |
     |   |-- res/
     |       |-- drawable/
     |       |   |-- act.png
