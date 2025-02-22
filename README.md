@@ -153,7 +153,7 @@ The app requires the following permissions to function correctly:
   - Displays details about the app, such as version and developer information.
   - Offers a simple interface to learn more about the app's features and usage.
 
-## Services
+# Services
 
 ### WifiScanService
 
