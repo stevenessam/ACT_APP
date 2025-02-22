@@ -3,14 +3,15 @@
 
 ![ACT App Screenshot](ACTAppPhoto/ACTAPP.png)
 
+</br></br>
 
-## Description
+# Description
 
 The ACT mobile application is a cutting-edge tool designed to detect and monitor nearby Wi-Fi networks, with a particular focus on identifying potentially contaminated areas. Developed as part of the broader ACT project, this app leverages advanced IoT technologies to scan for Wi-Fi networks, filter them based on predefined prefixes, and store the relevant data in a cache. One of its standout features is the ability to draw polygons on a map to define specific zones. When a zone is drawn, the app compares the SSIDs from the cached networks with the points within the polygon and triggers alerts if there is a match, indicating whether the zone is safe or contaminated. This real-time monitoring and alert system enhances user safety by providing timely notifications about potential risks in their environment.
 
+</br></br>
 
-
-## Project Directory Structure for act_app
+# Project Directory Structure for act_app
 
 ```
 act_app/
@@ -83,9 +84,9 @@ act_app/
     |   |-- AndroidManifest.xml
 
 ```
+</br></br>
 
-
-## Permissions
+# Permissions
 
 The app requires the following permissions to function correctly:
 
@@ -103,8 +104,9 @@ The app requires the following permissions to function correctly:
 - `VIBRATE`: To control the vibrator.
 - `POST_NOTIFICATIONS`: To display notifications.
 
+</br></br>
 
-## Activities
+# Activities
 
 ### SplashActivity
 
@@ -173,6 +175,50 @@ The app requires the following permissions to function correctly:
   - Stops the `WifiScanService` when the screen is turned on.
   - Helps in conserving battery by managing the service based on screen state.
 
+</br></br>
+
+# Steps to Install and Run the Application
+
+### Clone the Repository
+   Open a terminal or command prompt and run the following command to clone the repository:
+```
+git clone https://github.com/stevenessam/ACT_APP.git
+```
+
+### Open the Project in Android Studio
+
+1. **Launch Android Studio**: Open Android Studio on your computer.
+2. **Select "Open an existing Android Studio project"**: Choose this option from the welcome screen or from the File menu.
+3. **Navigate to the cloned repository**: Browse to the directory where you cloned the `act_app` repository and select the `act_app` folder.
+
+### Sync Project with Gradle Files
+
+- Once the project is open in Android Studio, you may see a prompt to sync the project with Gradle files.
+- Click on **"Sync Now"** to ensure all dependencies are downloaded and configured correctly. This step is crucial to avoid build errors related to missing dependencies.
+
+### Configure the Emulator or Connect a Device
+
+- **Using an Emulator**:
+  - Create a new Android Virtual Device (AVD) with API level 21 or higher.
+  - Configure the AVD settings according to your requirements and start the emulator.
+
+- **Using a Physical Device**:
+  - Enable **Developer Options** and **USB Debugging** on your Android device.
+  - Connect the device to your computer using a USB cable.
+  - Ensure the device is recognized by Android Studio.
+
+### Build and Run the Application
+
+1. **Click on the "Run" button**: Press the green play icon in Android Studio's toolbar.
+2. **Select your device or emulator**: Choose your connected device or running emulator from the list of available devices.
+3. **Build and Install**: The app will be compiled, and the APK will be installed on the selected device or emulator.
+
+### Grant Necessary Permissions
+
+- Upon the first launch, the app will request permissions for Wi-Fi and location access.
+- Ensure these permissions are granted to enable full functionality, including Wi-Fi scanning and location-based features.
+
+</br></br>
 
 ## License
 
