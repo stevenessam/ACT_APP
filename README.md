@@ -86,6 +86,17 @@ act_app/
 ```
 </br>
 
+# Technologies
+
+<table>
+	<tr>
+  	<td><img width="50" src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/android.png" alt="Android" title="Android"/></td>
+		<td><img width="50" src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/android_studio.png" alt="Android Studio" title="Android Studio"/></td>
+		<td><img width="50" src="https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/kotlin.png" alt="Kotlin" title="Kotlin"/></td>
+	</tr>
+</table>
+</br>
+
 # Permissions
 
 The app requires the following permissions to function correctly:
