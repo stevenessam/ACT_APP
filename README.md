@@ -3,13 +3,13 @@
 
 ![ACT App Screenshot](ACTAppPhoto/ACTAPP.png)
 
-</br></br>
+</br>
 
 # Description
 
 The ACT mobile application is a cutting-edge tool designed to detect and monitor nearby Wi-Fi networks, with a particular focus on identifying potentially contaminated areas. Developed as part of the broader ACT project, this app leverages advanced IoT technologies to scan for Wi-Fi networks, filter them based on predefined prefixes, and store the relevant data in a cache. One of its standout features is the ability to draw polygons on a map to define specific zones. When a zone is drawn, the app compares the SSIDs from the cached networks with the points within the polygon and triggers alerts if there is a match, indicating whether the zone is safe or contaminated. This real-time monitoring and alert system enhances user safety by providing timely notifications about potential risks in their environment.
 
-</br></br>
+</br>
 
 # Project Directory Structure for act_app
 
@@ -84,7 +84,7 @@ act_app/
     |   |-- AndroidManifest.xml
 
 ```
-</br></br>
+</br>
 
 # Permissions
 
@@ -104,7 +104,7 @@ The app requires the following permissions to function correctly:
 - `VIBRATE`: To control the vibrator.
 - `POST_NOTIFICATIONS`: To display notifications.
 
-</br></br>
+</br>
 
 # Activities
 
@@ -175,7 +175,7 @@ The app requires the following permissions to function correctly:
   - Stops the `WifiScanService` when the screen is turned on.
   - Helps in conserving battery by managing the service based on screen state.
 
-</br></br>
+</br>
 
 # Steps to Install and Run the Application
 
@@ -218,7 +218,7 @@ git clone https://github.com/stevenessam/ACT_APP.git
 - Upon the first launch, the app will request permissions for Wi-Fi and location access.
 - Ensure these permissions are granted to enable full functionality, including Wi-Fi scanning and location-based features.
 
-</br></br>
+</br>
 
 ## License
 
