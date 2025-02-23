@@ -235,7 +235,8 @@ git clone https://github.com/stevenessam/ACT_APP.git
 
 You can download the APK file from the following link:
 
-[Download ACTApp.apk](ACT_APK/ACTApp.apk)
+[Download ACTApp.apk](https://raw.githubusercontent.com/stevenessam/ACT_APP/main/ACT_APK/ACTApp.apk)
+
 
 </br>
 
