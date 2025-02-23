@@ -231,6 +231,14 @@ git clone https://github.com/stevenessam/ACT_APP.git
 
 </br>
 
+## Download the APK
+
+You can download the APK file from the following link:
+
+[Download ACTApp.apk](ACT_APK/ACTApp.apk)
+
+</br>
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
