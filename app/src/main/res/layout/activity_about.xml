@@ -29,6 +29,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <!-- Add the ImageView here -->
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/act"
+                    android:background="#ee2d20"
+                    android:layout_marginBottom="16dp"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
