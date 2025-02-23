@@ -41,9 +41,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="The Asynchronous Contact Tracing (ACT) app is designed to enhance Wi-Fi network scanning and tracking. It addresses the limitations of traditional synchronous contact tracing methods by providing asynchronous data analysis and caching of Wi-Fi SSIDs. For more details, refer to the ETSI standard."
+                    android:text="The ACT App detects and monitors Wi-Fi networks, focusing on identifying contaminated areas. It uses IoT technologies to scan, filter, and cache Wi-Fi SSIDs. Users can draw polygons on a map to define zones and receive alerts based on cached data."
                     android:textSize="16sp"
                     android:textColor="#555555"
+                    android:layout_marginBottom="16dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd"
                     android:layout_marginBottom="16dp"/>
 
                 <TextView
@@ -58,9 +64,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="This application enables users to scan and cache Wi-Fi networks, providing a comprehensive view of available SSIDs. Users can interact with a web view component to consult a database of infected geolocations, trace polygons on a map to view contaminated points, and receive alerts based on cached SSID data. The app utilizes geohashing for secure data transmission."
+                    android:text="Scan and cache Wi-Fi networks, view SSIDs, and interact with a web view to see infected geolocations. Draw polygons on the map to view contaminated points and receive alerts. Utilizes geohashing for secure data transmission."
                     android:textSize="16sp"
                     android:textColor="#555555"
+                    android:layout_marginBottom="16dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd"
                     android:layout_marginBottom="16dp"/>
 
                 <TextView
@@ -80,6 +92,120 @@
                     android:textColor="#555555"
                     android:layout_marginBottom="16dp"/>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Supervision"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:textColor="#333333"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="• Luigi LIQUORI"
+                    android:textSize="16sp"
+                    android:textColor="#555555"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Developers:"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="#333333"
+                    android:layout_marginBottom="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="• Steven ESSAM"
+                        android:textSize="16sp"
+                        android:textColor="#555555"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="8dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=": ACT App Development"
+                        android:textSize="16sp"
+                        android:textColor="#555555"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="• Grégory JEANNIN"
+                        android:textSize="16sp"
+                        android:textColor="#555555"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="8dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=": MQTT/oneM2M Integration"
+                        android:textSize="16sp"
+                        android:textColor="#555555"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="• Ahmed KAMOUN"
+                        android:textSize="16sp"
+                        android:textColor="#555555"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="8dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=": Cloud CI/CD Automation"
+                        android:textSize="16sp"
+                        android:textColor="#555555"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd"
+                    android:layout_marginBottom="16dp"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -97,6 +223,12 @@
                     android:textColor="#555555"
                     android:layout_marginBottom="16dp"/>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd"
+                    android:layout_marginBottom="16dp"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -109,9 +241,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Alpha-0.5"
+                    android:text="ACT APP © 2025 - Version 1.0"
                     android:textSize="16sp"
                     android:textColor="#555555"
+                    android:layout_marginBottom="16dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#dddddd"
                     android:layout_marginBottom="16dp"/>
 
                 <TextView
