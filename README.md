@@ -149,6 +149,7 @@ The app requires the following permissions to function correctly:
 - **Functionality**:
   - Displays a list of all scanned Wi-Fi networks.
   - Updates the list in real-time as new networks are detected.
+  - Displays a list of cached networks that match the specified SSID prefix.
   - Allows users to clear the cached networks.
   - Provides a settings dialog to customize scanning intervals, signal strength thresholds, and SSID prefixes.
   - Requests necessary permissions for Wi-Fi and location access.
